@@ -8,16 +8,23 @@
         <File name="FILE_JSON" fileName="logs/${date:yyyy-MM-dd-HH-mm-ss}.log">
             <JsonTemplateLayout eventTemplateUri="classpath:LogLayout.json"/>
         </File>
+
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %highlight{%-5p} [%c] %m%n" disableAnsi="false"/>
+        </Console>
     </Appenders>
 
     <Loggers>
+        <!-- сторонние предупреждения -->
         <Logger name="com.sun" level="WARN"/>
         <Logger name="jdk.event.security" level="INFO"/>
         <Logger name="sun.rmi" level="WARN"/>
         <Logger name="sun.rmi.transport" level="WARN"/>
 
+        <!-- Корневой логгер -->
         <Root level="INFO">
             <AppenderRef ref="FILE_JSON"/>
+            <AppenderRef ref="STDOUT"/>
         </Root>
     </Loggers>
 </Configuration>

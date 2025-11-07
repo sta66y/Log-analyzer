@@ -1,8 +1,17 @@
 package academy.cli;
 
+import academy.cli.converter.OutputFormatTypeConverter;
+import academy.io.Reader;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Command;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.stream.Stream;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import static academy.io.ReaderFabric.createReader;
 
 @Command(
     name = "Анализатор логов NGINX",
@@ -10,6 +19,8 @@ import picocli.CommandLine.Command;
     mixinStandardHelpOptions = true
 )
 public class LogAnalyzerCommand implements Runnable{
+
+    private static final Logger logger = LogManager.getLogger(LogAnalyzerCommand.class);
 
     @Option(
         names = {"-p", "--path"},
@@ -20,9 +31,9 @@ public class LogAnalyzerCommand implements Runnable{
 
     @Option(
         names = {"-f", "--format"},
-        description = "Формат вывода результатов: json | markdown | adoc",
-        required = false,
-        defaultValue = "json"
+        converter = OutputFormatTypeConverter.class,
+        description = "Формат вывода результатов: ${COMPLETION-CANDIDATES}",
+        required = false
     )
     private String format;
 
@@ -52,8 +63,17 @@ public class LogAnalyzerCommand implements Runnable{
 
     @Override
     public void run() {
-        //TODO локальный файл
-        //TODO удаленный файл
+        try {
+            validatePath(path);
+
+            Reader reader = createReader(path);
+            Stream<String> stream = reader.read(path);
+
+
+        } catch (Exception e) {
+            System.exit(2);
+        }
+
         //TODO проверить что формат либо .txt, либо .log
         //TODO вынести ошибки, если не удалось открыть файл
 
@@ -67,6 +87,13 @@ public class LogAnalyzerCommand implements Runnable{
         //TODO ошибка если файл существует, директория недоступна, расширение не соответствует
 
 
+    }
+
+    private void validatePath(String path) {
+        if (!Files.exists(Path.of(path))) {
+            logger.error("Такого файла не существует: {}", path);
+            throw new IllegalArgumentException("Такого файла не существует: " + path);
+        }
     }
 
     public static void main(String[] args) {
