@@ -1,7 +1,5 @@
-package academy.acceptance.io;
+package academy.io;
 
-import academy.io.LocalReader;
-import academy.io.Reader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;

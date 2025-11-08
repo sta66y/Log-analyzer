@@ -1,8 +1,5 @@
-package academy.acceptance.io;
+package academy.io;
 
-import academy.io.LocalReader;
-import academy.io.Reader;
-import academy.io.RemoteReader;
 import org.junit.jupiter.api.Test;
 import static academy.io.ReaderFabric.createReader;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;

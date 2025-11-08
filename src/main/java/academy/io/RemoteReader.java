@@ -35,16 +35,18 @@ public class RemoteReader implements Reader{
             );
 
             if (response.statusCode() != 200) {
-                throw new RuntimeException("Ошибка соединения с сервером: " + response.statusCode());
+                logger.error("Ошибка соединения с сервером: {}", response.statusCode());
+                throw new IOException("Ошибка соединения с сервером: " + response.statusCode());
             }
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(response.body()));
             return reader.lines();
 
         } catch (InterruptedException e) {
+            logger.error("Прерывание при HTTP-запросе");
             throw new RuntimeException("Прерывание при HTTP-запросе", e);
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка соединения с сервером", e);
+            throw new RuntimeException(e);
         }
     }
 }

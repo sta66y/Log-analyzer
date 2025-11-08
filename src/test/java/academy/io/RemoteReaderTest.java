@@ -1,4 +1,4 @@
-package academy.acceptance.io;
+package academy.io;
 
 import academy.io.RemoteReader;
 import okhttp3.mockwebserver.MockResponse;

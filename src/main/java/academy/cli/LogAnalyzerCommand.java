@@ -2,6 +2,8 @@ package academy.cli;
 
 import academy.cli.converter.OutputFormatTypeConverter;
 import academy.io.Reader;
+import academy.parser.ParsedLog;
+import academy.parser.Parser;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Command;
@@ -69,13 +71,15 @@ public class LogAnalyzerCommand implements Runnable{
             Reader reader = createReader(path);
             Stream<String> stream = reader.read(path);
 
+            Parser parser = new Parser();
+            Stream<ParsedLog> parsedLogStream = parser.parse(stream);
+
 
         } catch (Exception e) {
+            System.err.println(e.getMessage());
             System.exit(2);
         }
 
-        //TODO проверить что формат либо .txt, либо .log
-        //TODO вынести ошибки, если не удалось открыть файл
 
         //TODO проверить from и to
 
