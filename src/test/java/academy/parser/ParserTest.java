@@ -1,10 +1,10 @@
 package academy.parser;
 
+import academy.util.ParsedLog;
 import org.junit.jupiter.api.Test;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -32,17 +32,17 @@ public class ParserTest {
 
         ParsedLog expected1 = new ParsedLog(
             "93.180.71.3", "-", "-", date,
-            "GET /downloads/product_1 HTTP/1.1", 304, 0, "-",
+            "GET", "/downloads/product_1", "HTTP/1.1", 304, 0, "-",
             "Debian APT-HTTP/1.3 (0.8.16~exp12ubuntu10.21)"
         );
         ParsedLog expected2 = new ParsedLog(
             "93.180.71.3", "-", "-", date,
-            "GET /downloads/product_1 HTTP/1.1", 228, 0, "-",
+            "GET", "/downloads/product_1", "HTTP/1.1", 228, 0, "-",
             "Debian APT-HTTP/1.3 (0.8.16~exp12ubuntu10.21)"
         );
         ParsedLog expected3 = new ParsedLog(
             "93.180.71.3", "-", "-", date,
-            "GET /downloads/product_1 HTTP/1.1", 337, 0, "-",
+            "GET", "/downloads/product_1", "HTTP/1.1", 337, 0, "-",
             "Debian APT-HTTP/1.3 (0.8.16~exp12ubuntu10.21)"
         );
 

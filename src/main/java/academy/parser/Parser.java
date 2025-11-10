@@ -1,5 +1,6 @@
 package academy.parser;
 
+import academy.util.ParsedLog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.io.IOException;
@@ -20,7 +21,9 @@ public class Parser {
             "(?<clientId>\\S+)\\s" +
             "(?<userRFCId>\\S+)\\s" +
             "\\[(?<date>[^\\]]+)\\]\\s" +
-            "\"(?<httpRequest>[^\"]+)\"\\s" +
+            "\"(?<method>\\S+)\\s" +
+            "(?<resource>\\S+)\\s" +
+            "(?<version>\\S+)\"\\s" +
             "(?<httpResponse>\\S+)\\s" +
             "(?<size>\\S+)\\s" +
             "\"(?<referrer>[^\"]+)\"\\s" +
@@ -49,7 +52,9 @@ public class Parser {
 
         ZonedDateTime date = ZonedDateTime.parse(matcher.group("date"), DATE_FORMAT);
 
-        String httpRequest = matcher.group("httpRequest");
+        String method = matcher.group("method");
+        String resource = matcher.group("resource");
+        String version = matcher.group("version");
 
         int httpResponse = Integer.parseInt(matcher.group("httpResponse"));
         int size = Integer.parseInt(matcher.group("size"));
@@ -57,6 +62,7 @@ public class Parser {
         String referrer = matcher.group("referrer");
         String userAgent = matcher.group("userAgent");
 
-        return new ParsedLog(ip, clientId, userRFCId, date, httpRequest, httpResponse, size, referrer, userAgent);
+        return new ParsedLog(ip, clientId, userRFCId, date, method,
+            resource, version, httpResponse, size, referrer, userAgent);
     }
 }

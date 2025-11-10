@@ -1,4 +1,4 @@
-package academy.parser;
+package academy.util;
 
 import java.time.ZonedDateTime;
 
@@ -7,7 +7,9 @@ public record ParsedLog(
     String clientId,
     String userRFCId,
     ZonedDateTime date,
-    String httpRequest,
+    String method,
+    String resource,
+    String version,
     int httpResponse,
     int size,
     String referrer,

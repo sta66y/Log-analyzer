@@ -2,7 +2,7 @@ package academy.cli;
 
 import academy.cli.converter.OutputFormatTypeConverter;
 import academy.io.Reader;
-import academy.parser.ParsedLog;
+import academy.util.ParsedLog;
 import academy.parser.Parser;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
@@ -55,7 +55,7 @@ public class LogAnalyzerCommand implements Runnable{
 
     @Option(
         names = {"--to"},
-        description = "Дата, до которой начать анализ. Формат ISO8601",
+        description = "Дата, до которой завершить анализ. Формат ISO8601",
         required = false
     )
     private String dateTo;
