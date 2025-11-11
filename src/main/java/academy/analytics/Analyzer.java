@@ -12,18 +12,27 @@ public class Analyzer {
     private final ZonedDateTime dateFrom;
     private final ZonedDateTime dateTo;
 
-    private final List<AnalyzerModule> analyzerModules = List.of( // важен порядок вызова: 1-м вызывается RequestStats, так как он сохраняет в контекст количество запросов, которое используется и в других классах
-        new RequestStats(),
-        new ResponseSizeStats(),
-        new StatusCodeStats(),
-        new TopResourcesStats(),
-        new DateDistributionStats(),
-        new ProtocolStats()
-    );
+    private final List<AnalyzerModule> analyzerModules;
+
+    public Analyzer(ZonedDateTime dateFrom, ZonedDateTime dateTo, List<AnalyzerModule> analyzerModules) {
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+
+        this.analyzerModules = analyzerModules;
+    }
 
     public Analyzer(ZonedDateTime dateFrom, ZonedDateTime dateTo) {
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
+
+        analyzerModules = List.of( // важен порядок вызова: 1-м вызывается RequestStats, так как он сохраняет в контекст количество запросов, которое используется и в других классах
+            new RequestStats(),
+            new ResponseSizeStats(),
+            new StatusCodeStats(),
+            new TopResourcesStats(),
+            new DateDistributionStats(),
+            new ProtocolStats()
+        );
     }
 
     public AnalysisContext analyseLog(Stream<ParsedLog> parsedLogStream) {
