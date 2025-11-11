@@ -1,5 +1,6 @@
 package academy.cli;
 
+import academy.analytics.Analyzer;
 import academy.cli.converter.OutputFormatTypeConverter;
 import academy.io.Reader;
 import academy.util.ParsedLog;
@@ -9,6 +10,8 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Command;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -23,6 +26,8 @@ import static academy.io.ReaderFabric.createReader;
 public class LogAnalyzerCommand implements Runnable{
 
     private static final Logger logger = LogManager.getLogger(LogAnalyzerCommand.class);
+    private static final DateTimeFormatter DATE_FORMAT =
+        DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z"); //TODO вынести в конфиг
 
     @Option(
         names = {"-p", "--path"},
@@ -51,14 +56,14 @@ public class LogAnalyzerCommand implements Runnable{
         description = "Дата, с которой начать анализ. Формат ISO8601",
         required = false
     )
-    private String dateFrom;
+    private ZonedDateTime dateFrom;
 
     @Option(
         names = {"--to"},
         description = "Дата, до которой завершить анализ. Формат ISO8601",
         required = false
     )
-    private String dateTo;
+    private ZonedDateTime dateTo;
 
 
 
@@ -66,13 +71,17 @@ public class LogAnalyzerCommand implements Runnable{
     @Override
     public void run() {
         try {
-            validatePath(path);
+            validatePath();
+            validateDates();
 
             Reader reader = createReader(path);
             Stream<String> stream = reader.read(path);
 
             Parser parser = new Parser();
             Stream<ParsedLog> parsedLogStream = parser.parse(stream);
+
+            Analyzer analyzer = new Analyzer(dateFrom, dateTo);
+            analyzer.analyseLog(parsedLogStream);
 
 
         } catch (Exception e) {
@@ -93,12 +102,20 @@ public class LogAnalyzerCommand implements Runnable{
 
     }
 
-    private void validatePath(String path) {
+    private void validatePath() {
         if (!Files.exists(Path.of(path))) {
             logger.error("Такого файла не существует: {}", path);
             throw new IllegalArgumentException("Такого файла не существует: " + path);
         }
     }
+
+    private void validateDates() {
+        if (dateFrom != null && dateTo != null && dateFrom.isAfter(dateTo)) {
+            logger.error("--from не может быть позже, чем --to");
+            throw new IllegalArgumentException("--from не может быть позже, чем --to");
+        }
+    }
+
 
     public static void main(String[] args) {
         int exitCode = new CommandLine(new LogAnalyzerCommand()).execute(args);
