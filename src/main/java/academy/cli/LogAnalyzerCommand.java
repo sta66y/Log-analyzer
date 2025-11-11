@@ -2,7 +2,9 @@ package academy.cli;
 
 import academy.analytics.Analyzer;
 import academy.cli.converter.OutputFormatTypeConverter;
-import academy.io.Reader;
+import academy.enums.OutputFormats;
+import academy.io.input.Reader;
+import academy.util.AnalysisContext;
 import academy.util.ParsedLog;
 import academy.parser.Parser;
 import picocli.CommandLine;
@@ -12,11 +14,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import static academy.io.ReaderFabric.createReader;
+import static academy.io.input.ReaderFabric.createReader;
 
 @Command(
     name = "Анализатор логов NGINX",
@@ -31,10 +35,10 @@ public class LogAnalyzerCommand implements Runnable{
 
     @Option(
         names = {"-p", "--path"},
-        description = "Путь к одному или нескольким NGINX лог-файлам",
+        description = "Путь к одному или нескольким NGINX лог-файлам (файлы указывать через пробел)",
         required = true
     )
-    private String path;
+    private List<String> paths;
 
     @Option(
         names = {"-f", "--format"},
@@ -42,7 +46,7 @@ public class LogAnalyzerCommand implements Runnable{
         description = "Формат вывода результатов: ${COMPLETION-CANDIDATES}",
         required = false
     )
-    private String format;
+    private OutputFormats format;
 
     @Option(
         names = {"-o", "--output"},
@@ -71,18 +75,20 @@ public class LogAnalyzerCommand implements Runnable{
     @Override
     public void run() {
         try {
-            validatePath();
             validateDates();
 
-            Reader reader = createReader(path);
-            Stream<String> stream = reader.read(path);
+            Stream<String> combinedStream = paths.stream()
+                .flatMap(path -> {
+                    Reader reader = createReader(path);
+                    return reader.read(path);
+                });
 
             Parser parser = new Parser();
-            Stream<ParsedLog> parsedLogStream = parser.parse(stream);
+            Stream<ParsedLog> parsedLogStream = parser.parse(combinedStream);
 
             Analyzer analyzer = new Analyzer(dateFrom, dateTo);
-            analyzer.analyseLog(parsedLogStream);
-
+            AnalysisContext context = analyzer.analyseLog(parsedLogStream);
+            context.setFiles(paths); //TODO подумать...
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -90,23 +96,12 @@ public class LogAnalyzerCommand implements Runnable{
         }
 
 
-        //TODO проверить from и to
-
-        //TODO аналитика
-
         //TODO класс для вывода результатов в формате format
 
         //TODO запись файла
         //TODO ошибка если файл существует, директория недоступна, расширение не соответствует
 
 
-    }
-
-    private void validatePath() {
-        if (!Files.exists(Path.of(path))) {
-            logger.error("Такого файла не существует: {}", path);
-            throw new IllegalArgumentException("Такого файла не существует: " + path);
-        }
     }
 
     private void validateDates() {
