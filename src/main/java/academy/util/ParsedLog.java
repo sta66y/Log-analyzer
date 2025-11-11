@@ -9,7 +9,7 @@ public record ParsedLog(
     ZonedDateTime date,
     String method,
     String resource,
-    String version,
+    String protocol,
     int httpResponse,
     int size,
     String referrer,

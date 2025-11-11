@@ -56,8 +56,8 @@ mvnw.cmd clean verify
 Если вы в процессе сборки получили ошибку:
 
 ```shell
-Rule 0: org.apache.maven.enforcer.rules.version.RequireJavaVersion failed with message:
-JDK version must be at least 24
+Rule 0: org.apache.maven.enforcer.rules.protocol.RequireJavaVersion failed with message:
+JDK protocol must be at least 24
 ```
 
 Значит, версия вашего JDK ниже 24.
@@ -65,8 +65,8 @@ JDK version must be at least 24
 Если же получили ошибку:
 
 ```shell
-Rule 1: org.apache.maven.enforcer.rules.version.RequireMavenVersion failed with message:
-Maven version should, at least, be 3.9.11
+Rule 1: org.apache.maven.enforcer.rules.protocol.RequireMavenVersion failed with message:
+Maven protocol should, at least, be 3.9.11
 ```
 
 Значит, у вас используется версия maven ниже 3.9.11. Такого не должно произойти,
