@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Stream;
@@ -48,7 +49,7 @@ public class AnalyzerTest {
     @DisplayName("Фильтрация: логи ДО dateFrom должны отфильтровываться")
     void isWithinDateRange_ShouldFilterLogsBeforeDateFrom() {
         // все логи из EXAMPLES_LOG до этой даты
-        ZonedDateTime dateFrom = ZonedDateTime.parse("2023-10-16T00:00:00Z");
+        LocalDate dateFrom = LocalDate.parse("2023-10-16");
         analyzer = new Analyzer(dateFrom, null, mockedModules);
 
         analyzer.analyseLog(TestConstants.EXAMPLES_LOG.stream());
@@ -68,7 +69,7 @@ public class AnalyzerTest {
     @DisplayName("Фильтрация: логи ПОСЛЕ dateTo должны отфильтровываться")
     void isWithinDateRange_ShouldFilterLogsAfterDateTo() {
         // все логи из EXAMPLES_LOG после этой даты
-        ZonedDateTime dateTo = ZonedDateTime.parse("2023-10-14T23:59:59Z");
+        LocalDate dateTo = LocalDate.parse("2023-10-14");
         analyzer = new Analyzer(null, dateTo, mockedModules);
 
         analyzer.analyseLog(TestConstants.EXAMPLES_LOG.stream());
@@ -84,8 +85,8 @@ public class AnalyzerTest {
     @Test
     @DisplayName("Фильтрация: логи в диапазоне dateFrom-dateTo должны обрабатываться")
     void isWithinDateRange_ShouldProcessLogsWithinRange() {
-        ZonedDateTime dateFrom = ZonedDateTime.parse("2023-10-14T00:00:00Z");
-        ZonedDateTime dateTo = ZonedDateTime.parse("2023-10-16T23:59:59Z");
+        LocalDate dateFrom = LocalDate.parse("2023-10-14");
+        LocalDate dateTo = LocalDate.parse("2023-10-16");
         analyzer = new Analyzer(dateFrom, dateTo, mockedModules);
 
         analyzer.analyseLog(TestConstants.EXAMPLES_LOG.stream());
@@ -117,17 +118,23 @@ public class AnalyzerTest {
     @Test
     @DisplayName("Фильтрация: граничные значения должны включаться")
     void isWithinDateRange_ShouldIncludeBoundaryDates() {
-        // границы точно совпадают с датами логов
-        ZonedDateTime dateFrom = ZonedDateTime.parse("2023-10-15T14:35:10Z"); // точное время второго лога
-        ZonedDateTime dateTo = ZonedDateTime.parse("2023-10-15T14:50:15Z");   // точное время последнего лога
+        // границы точно совпадают с датами логов (преобразованные в LocalDate)
+        LocalDate dateFrom = LocalDate.parse("2023-10-15"); // дата второго лога
+        LocalDate dateTo = LocalDate.parse("2023-10-15");   // дата последнего лога
         analyzer = new Analyzer(dateFrom, dateTo, mockedModules);
 
         analyzer.analyseLog(TestConstants.EXAMPLES_LOG.stream());
 
         // логи с граничными датами должны быть обработаны
         for (AnalyzerModule mockedModule : mockedModules) {
+            // Обрабатываем только логи с датой 2023-10-15
             for (int i = 1; i < TestConstants.EXAMPLES_LOG.size(); i++) {
-                verify(mockedModule).accept(TestConstants.EXAMPLES_LOG.get(i));
+                ParsedLog log = TestConstants.EXAMPLES_LOG.get(i);
+                if (log.date().toLocalDate().equals(LocalDate.parse("2023-10-15"))) {
+                    verify(mockedModule).accept(log);
+                } else {
+                    verify(mockedModule, never()).accept(log);
+                }
             }
             verify(mockedModule, never()).accept(TestConstants.EXAMPLES_LOG.get(0));
         }
@@ -143,6 +150,31 @@ public class AnalyzerTest {
 
         for (AnalyzerModule mockedModule : mockedModules) {
             verify(mockedModule, never()).accept(org.mockito.ArgumentMatchers.any());
+        }
+    }
+
+    @Test
+    @DisplayName("Фильтрация: логи с той же датой что и dateFrom/dateTo должны включаться")
+    void isWithinDateRange_ShouldIncludeSameDates() {
+        LocalDate dateFrom = LocalDate.parse("2023-10-15");
+        LocalDate dateTo = LocalDate.parse("2023-10-15");
+        analyzer = new Analyzer(dateFrom, dateTo, mockedModules);
+
+        // Создаем логи с разным временем но одинаковой датой
+        ParsedLog morningLog = new ParsedLog("10.0.0.1", "user1", "user1",
+            ZonedDateTime.parse("2023-10-15T08:00:00Z"), "GET", "/api/test", "HTTP/1.1", 200, 100, "http://test.com", "Mozilla");
+        ParsedLog noonLog = new ParsedLog("10.0.0.2", "user2", "user2",
+            ZonedDateTime.parse("2023-10-15T12:00:00Z"), "POST", "/api/test", "HTTP/1.1", 201, 150, "http://test.com", "Mozilla");
+        ParsedLog eveningLog = new ParsedLog("10.0.0.3", "user3", "user3",
+            ZonedDateTime.parse("2023-10-15T18:00:00Z"), "DELETE", "/api/test", "HTTP/1.1", 204, 0, "http://test.com", "Mozilla");
+
+        analyzer.analyseLog(Stream.of(morningLog, noonLog, eveningLog));
+
+        // Все логи с датой 2023-10-15 должны быть обработаны
+        for (AnalyzerModule mockedModule : mockedModules) {
+            verify(mockedModule).accept(morningLog);
+            verify(mockedModule).accept(noonLog);
+            verify(mockedModule).accept(eveningLog);
         }
     }
 }

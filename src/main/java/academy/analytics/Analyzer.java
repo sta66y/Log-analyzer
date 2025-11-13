@@ -2,26 +2,22 @@ package academy.analytics;
 
 import academy.util.AnalysisContext;
 import academy.util.ParsedLog;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class Analyzer {
-    //TODO обработать случай, когда log пустой
-
-    private final ZonedDateTime dateFrom;
-    private final ZonedDateTime dateTo;
-
+    private final LocalDate dateFrom;
+    private final LocalDate dateTo;
     private final List<AnalyzerModule> analyzerModules;
 
-    public Analyzer(ZonedDateTime dateFrom, ZonedDateTime dateTo, List<AnalyzerModule> analyzerModules) {
+    public Analyzer(LocalDate dateFrom, LocalDate dateTo, List<AnalyzerModule> analyzerModules) {
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
-
         this.analyzerModules = analyzerModules;
     }
 
-    public Analyzer(ZonedDateTime dateFrom, ZonedDateTime dateTo) {
+    public Analyzer(LocalDate dateFrom, LocalDate dateTo) {
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
 
@@ -49,8 +45,10 @@ public class Analyzer {
     }
 
     private boolean isWithinDateRange(ParsedLog log) {
-        if (dateFrom != null && log.date().isBefore(dateFrom)) return false;
-        if (dateTo != null && log.date().isAfter(dateTo)) return false;
+        LocalDate logDate = log.date().toLocalDate();
+
+        if (dateFrom != null && logDate.isBefore(dateFrom)) return false;
+        if (dateTo != null && logDate.isAfter(dateTo)) return false;
         return true;
     }
 }

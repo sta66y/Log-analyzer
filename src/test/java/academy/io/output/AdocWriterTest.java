@@ -7,6 +7,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
@@ -195,8 +196,8 @@ class AdocWriterTest {
 
         context.setFiles(List.of("access.log", "http://example.com/access.log"));
 
-        context.setStartDate(ZonedDateTime.now().minusDays(7));
-        context.setEndDate(ZonedDateTime.now());
+        context.setStartDate(LocalDate.now().minusDays(7));
+        context.setEndDate(LocalDate.now());
 
         context.setTotalRequestsCount(10000);
         context.setResponseSizeInBytes(new ResponseSize(500.0, 1000, 950));

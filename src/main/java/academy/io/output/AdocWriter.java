@@ -8,6 +8,7 @@ import academy.util.ResponseSize;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
@@ -131,9 +132,9 @@ public class AdocWriter implements Writer {
         return Integer.toString(totalRequestsCount);
     }
 
-    private String formatDisplayDate(ZonedDateTime startDate) {
+    private String formatDisplayDate(LocalDate startDate) {
         if (startDate == null) return "-";
-        return startDate.toLocalDate().toString();
+        return startDate.toString();
     }
 
     private String formatDisplayFiles(List<String> files) {

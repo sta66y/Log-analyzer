@@ -14,7 +14,7 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Command;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,14 +62,14 @@ public class LogAnalyzerCommand implements Runnable{
         description = "Дата, с которой начать анализ. Формат ISO8601",
         required = false
     )
-    private ZonedDateTime dateFrom;
+    private LocalDate dateFrom;
 
     @Option(
         names = {"--to"},
         description = "Дата, до которой завершить анализ. Формат ISO8601",
         required = false
     )
-    private ZonedDateTime dateTo;
+    private LocalDate dateTo;
 
 
 
@@ -101,13 +101,6 @@ public class LogAnalyzerCommand implements Runnable{
             System.err.println(e.getMessage());
             System.exit(2);
         }
-
-
-        //TODO класс для вывода результатов в формате format
-
-        //TODO запись файла
-        //TODO ошибка если файл существует, директория недоступна, расширение не соответствует
-
 
     }
 

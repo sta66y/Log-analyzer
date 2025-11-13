@@ -13,7 +13,7 @@ public class DateDistributionStatsTest {
     private final AnalysisContext context = new AnalysisContext();
 
     @Test
-    @DisplayName("Проверка работы accept + записывания данных в context")
+    @DisplayName("Проверка работы accept + записывания данных в context") //TODO орфография страдает
     void statusCodeTest() {
         context.setTotalRequestsCount(EXAMPLES_LOG.size());
 
