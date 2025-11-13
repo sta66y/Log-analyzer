@@ -1,5 +1,6 @@
 package academy.util;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -11,6 +12,8 @@ public class AnalysisContext {
     private List<ResponseCode> responseCodes;
     private List<Date> requestsPerDate;
     private Set<String> uniqueProtocols;
+    private ZonedDateTime startDate;
+    private ZonedDateTime endDate;
 
     public List<String> getFiles() {
         return files;
@@ -66,5 +69,21 @@ public class AnalysisContext {
 
     public void setUniqueProtocols(Set<String> uniqueProtocols) {
         this.uniqueProtocols = uniqueProtocols;
+    }
+
+    public ZonedDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(ZonedDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public ZonedDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(ZonedDateTime startDate) {
+        this.startDate = startDate;
     }
 }
