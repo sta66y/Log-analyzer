@@ -91,7 +91,7 @@ public class LogAnalyzerCommand implements Runnable{
             Analyzer analyzer = new Analyzer(dateFrom, dateTo);
             AnalysisContext context = analyzer.analyseLog(parsedLogStream);
             context.setFiles(paths); //TODO подумать...
-            context.setEndDate(dateFrom);
+            context.setStartDate(dateFrom);
             context.setEndDate(dateTo);
 
             Writer writer = WriterFabric.createWriter(format); //TODO мб пикокли конверт сразу в writer
