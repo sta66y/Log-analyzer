@@ -15,7 +15,7 @@ public class JsonWriter implements Writer {
 
         try {
             String json = mapper.writeValueAsString(context);
-            Files.write(path, json.getBytes());
+            Files.writeString(path, json);
         } catch (IOException e) {
             throw new RuntimeException("Не удалось записать json в файл");
         }
