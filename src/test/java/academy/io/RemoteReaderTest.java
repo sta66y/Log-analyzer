@@ -1,6 +1,6 @@
 package academy.io;
 
-import academy.io.RemoteReader;
+import academy.io.input.RemoteReader;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.Test;

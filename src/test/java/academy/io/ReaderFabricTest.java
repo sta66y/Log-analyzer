@@ -1,7 +1,10 @@
 package academy.io;
 
+import academy.io.input.LocalReader;
+import academy.io.input.Reader;
+import academy.io.input.RemoteReader;
 import org.junit.jupiter.api.Test;
-import static academy.io.ReaderFabric.createReader;
+import static academy.io.input.ReaderFabric.createReader;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 public class ReaderFabricTest {

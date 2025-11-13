@@ -1,4 +1,4 @@
-package academy.io;
+package academy.io.input;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
