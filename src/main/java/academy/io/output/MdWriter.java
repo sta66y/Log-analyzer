@@ -45,7 +45,7 @@ public class MdWriter implements Writer {
 
         List<Resource> resources = context.getResources();
         for (Resource resource : resources) {
-            md.append("| ").append(resource.resource()).append(" |");
+            md.append("| ").append(resource.resource());
             md.append("| ").append(Integer.toString(resource.totalRequestsCount())).append(" |\n");
         }
         md.append("\n");
@@ -56,8 +56,8 @@ public class MdWriter implements Writer {
 
         List<ResponseCode> responseCodes = context.getResponseCodes();
         for (ResponseCode responseCode : responseCodes) {
-            md.append("| ").append(Integer.toString(responseCode.code())).append(" |");
-            md.append("| ").append(getHttpCodeName(responseCode.code())).append(" |");
+            md.append("| ").append(Integer.toString(responseCode.code()));
+            md.append("| ").append(getHttpCodeName(responseCode.code()));
             md.append("| ").append(Integer.toString(responseCode.totalResponsesCount())).append(" |\n");
         }
         md.append("\n");
@@ -68,21 +68,24 @@ public class MdWriter implements Writer {
 
         List<Date> dates = context.getRequestsPerDate();
         for (Date date : dates) {
-            md.append("| ").append(date.date()).append(" |");
-            md.append("| ").append(date.weekday()).append(" |");
-            md.append("| ").append(Integer.toString(date.totalRequestsCount())).append(" |");
+            md.append("| ").append(date.date());
+            md.append("| ").append(date.weekday());
+            md.append("| ").append(Integer.toString(date.totalRequestsCount()));
             md.append("| ").append(Double.toString(date.totalRequestsPercentage())).append(" |\n");
         }
         md.append("\n");
 
-        md.append("#### Статистика по протоколам\n");
-        md.append("| Протокол | Количество |\n");
-        md.append("|:---------|-----------:|\n");
-
+        md.append("#### Уникальные протоколы\n");
+        md.append("| Протокол |\n");
+        md.append("|:--------:|\n");
         Set<String> uniqueProtocols = context.getUniqueProtocols();
         for (String protocol : uniqueProtocols) {
             md.append("| ").append(protocol).append(" |\n");
         }
+
+        if (context.getStartDate() != null) md.append("\nНачальная дата: ").append(context.getStartDate().toString());
+        if (context.getEndDate() != null) md.append("\nКонечная дата: ").append(context.getEndDate().toString());
+
 
         try {
             Files.writeString(path, md.toString());

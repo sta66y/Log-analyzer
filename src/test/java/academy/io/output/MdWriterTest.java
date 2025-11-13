@@ -36,7 +36,7 @@ class MdWriterTest {
         assertTrue(content.contains("#### Запрашиваемые ресурсы"));
         assertTrue(content.contains("#### Коды ответа"));
         assertTrue(content.contains("#### Статистика по датам"));
-        assertTrue(content.contains("#### Статистика по протоколам"));
+        assertTrue(content.contains("#### Уникальные протоколы"));
     }
 
     @Test
@@ -148,7 +148,7 @@ class MdWriterTest {
 
         String content = Files.readString(outputFile);
 
-        assertTrue(content.contains("| Протокол | Количество |"));
+        assertTrue(content.contains("| Протокол |"));
 
         assertTrue(content.contains("HTTP/1.1"));
         assertTrue(content.contains("HTTP/2.0"));

@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -25,7 +24,7 @@ public class AdocWriter implements Writer {
 
         adoc.append("==== Общая информация\n\n");
         adoc.append("[cols=\"1,1\", options=\"header\"]\n");
-        adoc.append("|===================\n");
+        adoc.append("|===\n");
         adoc.append("| Метрика | Значение\n");
 
         adoc.append("| Файл(-ы) | ").append(formatDisplayFiles(context.getFiles())).append("\n");
@@ -40,11 +39,11 @@ public class AdocWriter implements Writer {
             adoc.append("| 95p размера ответа | ").append(formatResponseSizesDisplay(size, "p95")).append("\n");
         }
 
-        adoc.append("|===================\n\n");
+        adoc.append("|===\n\n");
 
         adoc.append("==== Запрашиваемые ресурсы\n\n");
         adoc.append("[cols=\"3,1\", options=\"header\"]\n");
-        adoc.append("|====================\n");
+        adoc.append("|===\n");
         adoc.append("| Ресурс | Количество\n");
 
         List<Resource> resources = context.getResources();
@@ -52,11 +51,11 @@ public class AdocWriter implements Writer {
             adoc.append("| `").append(resource.resource()).append("` | ")
                 .append(formatTotalRequestsDisplay(resource.totalRequestsCount())).append("\n");
         }
-        adoc.append("|====================\n\n");
+        adoc.append("|===\n\n");
 
         adoc.append("==== Коды ответа\n\n");
         adoc.append("[cols=\"1,2,1\", options=\"header\"]\n");
-        adoc.append("|=======================\n");
+        adoc.append("|===\n");
         adoc.append("| Код | Имя | Количество\n");
 
         List<ResponseCode> responseCodes = context.getResponseCodes();
@@ -65,12 +64,12 @@ public class AdocWriter implements Writer {
                 .append(getHttpCodeName(responseCode.code())).append(" | ")
                 .append(formatTotalRequestsDisplay(responseCode.totalResponsesCount())).append("\n");
         }
-        adoc.append("|=======================\n\n");
+        adoc.append("|===\n\n");
 
         if (!context.getRequestsPerDate().isEmpty()) {
             adoc.append("==== Статистика по датам\n\n");
             adoc.append("[cols=\"1,1,1,1\", options=\"header\"]\n");
-            adoc.append("|=======================================\n");
+            adoc.append("|===\n");
             adoc.append("| Дата | День недели | Количество | Доля\n");
 
             List<Date> dates = context.getRequestsPerDate();
@@ -80,19 +79,22 @@ public class AdocWriter implements Writer {
                     .append(formatTotalRequestsDisplay(date.totalRequestsCount())).append(" | ")
                     .append(date.totalRequestsPercentage()).append("% |\n");
             }
-            adoc.append("|=======================================\n\n");
+            adoc.append("|===\n\n");
         }
 
         adoc.append("==== Статистика по протоколам\n\n");
         adoc.append("[cols=\"1,1\", options=\"header\"]\n");
-        adoc.append("|======================\n");
-        adoc.append("| Протокол | Количество\n");
+        adoc.append("|===\n");
+        adoc.append("| Протокол\n");
 
         Set<String> uniqueProtocols = context.getUniqueProtocols();
         for (String protocol : uniqueProtocols) {
-            adoc.append("| ").append(protocol).append(" | \n");
+            adoc.append("| ").append(protocol).append("\n");
         }
-        adoc.append("|======================\n");
+        adoc.append("|===\n");
+
+        if (context.getStartDate() != null) adoc.append("\nНачальная дата: ").append(context.getStartDate().toString());
+        if (context.getEndDate() != null) adoc.append("\nКонечная дата: ").append(context.getEndDate().toString());
 
         try {
             Files.writeString(path, adoc.toString());

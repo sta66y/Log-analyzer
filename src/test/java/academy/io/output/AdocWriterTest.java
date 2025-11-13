@@ -8,7 +8,6 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -156,7 +155,7 @@ class AdocWriterTest {
         String content = Files.readString(outputFile);
 
         assertTrue(content.contains("[cols=\"1,1\", options=\"header\"]"));
-        assertTrue(content.contains("| Протокол | Количество"));
+        assertTrue(content.contains("| Протокол"));
 
         assertTrue(content.contains("HTTP/1.1"));
         assertTrue(content.contains("HTTP/2.0"));
