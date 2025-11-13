@@ -4,6 +4,8 @@ import academy.analytics.Analyzer;
 import academy.cli.converter.OutputFormatTypeConverter;
 import academy.enums.OutputFormats;
 import academy.io.input.Reader;
+import academy.io.output.Writer;
+import academy.io.output.WriterFabric;
 import academy.util.AnalysisContext;
 import academy.util.ParsedLog;
 import academy.parser.Parser;
@@ -53,7 +55,7 @@ public class LogAnalyzerCommand implements Runnable{
         description = "Путь до файла, куда должен быть сохранён результат работы программы",
         required = true
     )
-    private String output;
+    private Path output;
 
     @Option(
         names = {"--from"},
@@ -89,6 +91,11 @@ public class LogAnalyzerCommand implements Runnable{
             Analyzer analyzer = new Analyzer(dateFrom, dateTo);
             AnalysisContext context = analyzer.analyseLog(parsedLogStream);
             context.setFiles(paths); //TODO подумать...
+            context.setEndDate(dateFrom);
+            context.setEndDate(dateTo);
+
+            Writer writer = WriterFabric.createWriter(format); //TODO мб пикокли конверт сразу в writer
+            writer.write(output, context);
 
         } catch (Exception e) {
             System.err.println(e.getMessage());

@@ -1,4 +1,4 @@
-package academy.io;
+package academy.io.input;
 
 import java.io.IOException;
 import java.nio.file.Files;
