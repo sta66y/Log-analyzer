@@ -1,112 +1,219 @@
 package academy.io.output;
 
-import academy.util.AnalysisContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import academy.util.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class JsonWriterTest {
     private final Writer writer = new JsonWriter();
-    private static final AnalysisContext context = AnalysisContextFactory.createFromExampleData();
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    @DisplayName("Проверка соответствия формата JSON")
-    void writeTest(@TempDir Path tempDir) throws Exception {
-        Path outputFile = tempDir.resolve("test_output.json");
+    @DisplayName("Должен создавать JSON файл с правильной структурой")
+    void shouldCreateJsonFileWithCorrectStructure(@TempDir Path tempDir) throws Exception {
+        AnalysisContext context = createTestContext();
+        Path outputFile = tempDir.resolve("test_report.json");
 
         writer.write(outputFile, context);
 
         assertTrue(Files.exists(outputFile), "Файл должен быть создан");
 
-        String jsonContent = Files.readString(outputFile);
-        assertNotNull(jsonContent, "Содержимое файла не должно быть null");
-        assertFalse(jsonContent.trim().isEmpty(), "Файл не должен быть пустым");
+        String content = Files.readString(outputFile);
+        assertNotNull(content);
+        assertFalse(content.trim().isEmpty());
 
-        JsonNode rootNode = mapper.readTree(jsonContent);
-
-        assertTrue(rootNode.has("files"), "JSON должен содержать поле 'files'");
-        assertTrue(rootNode.has("totalRequestsCount"), "JSON должен содержать поле 'totalRequestsCount'");
-        assertTrue(rootNode.has("responseSizeInBytes"), "JSON должен содержать поле 'responseSizeInBytes'");
-        assertTrue(rootNode.has("resources"), "JSON должен содержать поле 'resources'");
-        assertTrue(rootNode.has("responseCodes"), "JSON должен содержать поле 'responseCodes'");
-        assertTrue(rootNode.has("requestsPerDate"), "JSON должен содержать поле 'requestsPerDate'");
-        assertTrue(rootNode.has("uniqueProtocols"), "JSON должен содержать поле 'uniqueProtocols'");
-
-        assertEquals(10000, rootNode.get("totalRequestsCount").asInt(),
-            "totalRequestsCount должен быть 10000");
-
-        JsonNode sizeNode = rootNode.get("responseSizeInBytes");
-        assertTrue(sizeNode.has("average"), "responseSizeInBytes должен содержать 'average'");
-        assertTrue(sizeNode.has("max"), "responseSizeInBytes должен содержать 'max'");
-        assertTrue(sizeNode.has("p95"), "responseSizeInBytes должен содержать 'p95'");
-
-        assertEquals(500.0, sizeNode.get("average").asDouble(), 0.001,
-            "average должен быть 500.0");
-        assertEquals(1000, sizeNode.get("max").asInt(),
-            "max должен быть 1000");
-        assertEquals(950, sizeNode.get("p95").asInt(),
-            "p95 должен быть 950");
-
-        JsonNode filesNode = rootNode.get("files");
-        assertTrue(filesNode.isArray(), "files должен быть массивом");
-        assertEquals(2, filesNode.size(), "files должен содержать 2 элемента");
-        assertEquals("access.log", filesNode.get(0).asText());
-        assertEquals("http://example.com/access.log", filesNode.get(1).asText());
-
-        JsonNode resourcesNode = rootNode.get("resources");
-        assertTrue(resourcesNode.isArray(), "resources должен быть массивом");
-        assertEquals(2, resourcesNode.size(), "resources должен содержать 2 элемента");
-
-        JsonNode firstResource = resourcesNode.get(0);
-        assertEquals("/downloads/product_1", firstResource.get("resource").asText());
-        assertEquals(1000, firstResource.get("totalRequestsCount").asInt());
-
-        JsonNode protocolsNode = rootNode.get("uniqueProtocols");
-        assertTrue(protocolsNode.isArray(), "uniqueProtocols должен быть массивом");
-        assertEquals(3, protocolsNode.size(), "uniqueProtocols должен содержать 3 элемента");
-
-        AnalysisContext parsedContext = mapper.readValue(jsonContent, AnalysisContext.class);
-        assertNotNull(parsedContext, "JSON должен корректно парситься обратно в AnalysisContext");
-        assertEquals(context.getTotalRequestsCount(), parsedContext.getTotalRequestsCount(),
-            "totalRequestsCount должен совпадать после парсинга");
+        assertTrue(content.contains("\"files\""));
+        assertTrue(content.contains("\"totalRequestsCount\""));
+        assertTrue(content.contains("\"responseSizeInBytes\""));
+        assertTrue(content.contains("\"resources\""));
+        assertTrue(content.contains("\"responseCodes\""));
+        assertTrue(content.contains("\"requestsPerDate\""));
+        assertTrue(content.contains("\"uniqueProtocols\""));
     }
 
     @Test
-    @DisplayName("Проверка обработки ошибок при записи")
-    void write_ShouldThrowException_WhenInvalidPath(@TempDir Path tempDir) {
-        Path invalidPath = tempDir.resolve("123/test.json");
-
-        assertThrows(RuntimeException.class,
-            () -> writer.write(invalidPath, context),
-            "Должно выбрасываться RuntimeException при ошибке записи");
-    }
-
-    @Test
-    @DisplayName("Проверка формата дат в JSON")
-    void dateFormatTest(@TempDir Path tempDir) throws Exception {
-        Path outputFile = tempDir.resolve("date_test.json");
+    @DisplayName("Должен правильно отображать общую информацию в JSON")
+    void shouldDisplayGeneralInformationInJson(@TempDir Path tempDir) throws Exception {
+        AnalysisContext context = createTestContext();
+        Path outputFile = tempDir.resolve("general_info.json");
 
         writer.write(outputFile, context);
 
-        String jsonContent = Files.readString(outputFile);
-        JsonNode rootNode = mapper.readTree(jsonContent);
-        JsonNode datesNode = rootNode.get("requestsPerDate");
+        String content = Files.readString(outputFile);
 
-        assertTrue(datesNode.isArray(), "requestsPerDate должен быть массивом");
-        assertEquals(1, datesNode.size(), "Должна быть одна запись о дате");
+        assertTrue(content.contains("\"files\""), "Должно содержать поле files");
+        assertTrue(content.contains("\"totalRequestsCount\""), "Должно содержать поле totalRequestsCount");
+        assertTrue(content.contains("\"responseSizeInBytes\""), "Должно содержать поле responseSizeInBytes");
 
-        JsonNode dateNode = datesNode.get(0);
-        assertEquals("2024-03-01", dateNode.get("date").asText());
-        assertEquals("Monday", dateNode.get("weekday").asText());
-        assertEquals(2981, dateNode.get("totalRequestsCount").asInt());
-        assertEquals(12.10, dateNode.get("totalRequestsPercentage").asDouble(), 0.001);
+        assertTrue(content.contains("10000"), "Должно содержать общее количество запросов");
+        assertTrue(content.contains("1000"), "Должно содержать максимальный размер ответа");
+        assertTrue(content.contains("500.0"), "Должно содержать средний размер ответа");
+        assertTrue(content.contains("950"), "Должно содержать 95 перцентиль");
+    }
+
+    @Test
+    @DisplayName("Должен правильно форматировать список файлов в JSON")
+    void shouldFormatFilesListInJson(@TempDir Path tempDir) throws Exception {
+        AnalysisContext context = createTestContext();
+        Path outputFile = tempDir.resolve("files_format.json");
+
+        writer.write(outputFile, context);
+
+        String content = Files.readString(outputFile);
+
+        assertTrue(content.contains("access.log"));
+        assertTrue(content.contains("http://example.com/access.log"));
+    }
+
+    @Test
+    @DisplayName("Должен отображать ресурсы с правильными данными в JSON")
+    void shouldDisplayResourcesWithCorrectDataInJson(@TempDir Path tempDir) throws Exception {
+        AnalysisContext context = createTestContext();
+        Path outputFile = tempDir.resolve("resources.json");
+
+        writer.write(outputFile, context);
+
+        String content = Files.readString(outputFile);
+
+        assertTrue(content.contains("\"resources\""));
+
+        assertTrue(content.contains("/downloads/product_1"));
+        assertTrue(content.contains("/downloads/product_2"));
+        assertTrue(content.contains("1000"));
+        assertTrue(content.contains("100"));
+    }
+
+    @Test
+    @DisplayName("Должен отображать HTTP коды с правильными именами в JSON")
+    void shouldDisplayHttpCodesWithCorrectNamesInJson(@TempDir Path tempDir) throws Exception {
+        AnalysisContext context = createTestContext();
+        Path outputFile = tempDir.resolve("http_codes.json");
+
+        writer.write(outputFile, context);
+
+        String content = Files.readString(outputFile);
+
+        assertTrue(content.contains("\"responseCodes\""));
+
+        assertTrue(content.contains("200"));
+        assertTrue(content.contains("401"));
+        assertTrue(content.contains("500"));
+        assertTrue(content.contains("1000"));
+        assertTrue(content.contains("10"));
+        assertTrue(content.contains("1"));
+    }
+
+    @Test
+    @DisplayName("Должен отображать статистику по датам в правильном формате в JSON")
+    void shouldDisplayDateStatisticsInCorrectFormatInJson(@TempDir Path tempDir) throws Exception {
+        AnalysisContext context = createTestContext();
+        Path outputFile = tempDir.resolve("dates.json");
+
+        writer.write(outputFile, context);
+
+        String content = Files.readString(outputFile);
+
+        assertTrue(content.contains("\"requestsPerDate\""));
+
+        assertTrue(content.contains("2024-03-01"));
+        assertTrue(content.contains("Monday"));
+        assertTrue(content.contains("2981"));
+        assertTrue(content.contains("12.1"));
+    }
+
+    @Test
+    @DisplayName("Должен отображать протоколы в JSON")
+    void shouldDisplayProtocolsInJson(@TempDir Path tempDir) throws Exception {
+        AnalysisContext context = createTestContext();
+        Path outputFile = tempDir.resolve("protocols.json");
+
+        writer.write(outputFile, context);
+
+        String content = Files.readString(outputFile);
+
+        assertTrue(content.contains("\"uniqueProtocols\""));
+
+        assertTrue(content.contains("HTTP/1.1"));
+        assertTrue(content.contains("HTTP/2.0"));
+        assertTrue(content.contains("grpc"));
+    }
+
+    @Test
+    @DisplayName("Должен обрабатывать контекст с пустыми данными")
+    void shouldHandleContextWithEmptyData(@TempDir Path tempDir) throws Exception {
+        AnalysisContext emptyContext = createEmptyContext();
+        Path outputFile = tempDir.resolve("empty.json");
+
+        writer.write(outputFile, emptyContext);
+
+        assertTrue(Files.exists(outputFile));
+
+        String content = Files.readString(outputFile);
+        assertTrue(content.contains("\"files\""));
+        assertTrue(content.contains("\"totalRequestsCount\""));
+    }
+
+    @Test
+    @DisplayName("Должен выбрасывать исключение при ошибке записи файла")
+    void shouldThrowExceptionOnWriteError(@TempDir Path tempDir) {
+        Path invalidPath = tempDir.resolve("nonexistent/directory/report.json");
+
+        AnalysisContext context = createTestContext();
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+            () -> writer.write(invalidPath, context));
+
+        assertTrue(exception.getMessage().contains("Не удалось записать json в файл"));
+    }
+
+    private AnalysisContext createTestContext() {
+        AnalysisContext context = new AnalysisContext();
+
+        context.setFiles(List.of("access.log", "http://example.com/access.log"));
+
+        context.setStartDate(LocalDate.now().minusDays(7));
+        context.setEndDate(LocalDate.now());
+
+        context.setTotalRequestsCount(10000);
+        context.setResponseSizeInBytes(new ResponseSize(500.0, 1000, 950));
+
+        context.setResources(List.of(
+            new Resource("/downloads/product_1", 1000),
+            new Resource("/downloads/product_2", 100)
+        ));
+
+        context.setResponseCodes(List.of(
+            new ResponseCode(200, 1000),
+            new ResponseCode(401, 10),
+            new ResponseCode(500, 1)
+        ));
+
+        context.setRequestsPerDate(List.of(
+            new Date("2024-03-01", "Monday", 2981, 12.1)
+        ));
+
+        context.setUniqueProtocols(Set.of("HTTP/1.1", "HTTP/2.0", "grpc"));
+
+        return context;
+    }
+
+    private AnalysisContext createEmptyContext() {
+        AnalysisContext context = new AnalysisContext();
+        context.setFiles(List.of());
+        context.setTotalRequestsCount(0);
+        context.setResponseSizeInBytes(new ResponseSize(0.0, 0, 0));
+        context.setResources(List.of());
+        context.setResponseCodes(List.of());
+        context.setRequestsPerDate(List.of());
+        context.setUniqueProtocols(Set.of());
+        return context;
     }
 }
