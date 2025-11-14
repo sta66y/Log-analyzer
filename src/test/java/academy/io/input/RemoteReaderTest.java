@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RemoteReaderTest {
     private final HttpClient client = HttpClient.newHttpClient();
-    private final RemoteReader reader = new RemoteReader(client);
 
     @Test
     void read_ShouldReturnStream_WhenHttp200() throws IOException {
@@ -26,7 +25,8 @@ public class RemoteReaderTest {
                 .setBody("line1\nline2\nline3"));
 
             String url = server.url("/test.log").toString();
-            Stream<String> stream = reader.read(url);
+            Reader reader = new RemoteReader(client, url);
+            Stream<String> stream = reader.read();
             List<String> lines = stream.collect(Collectors.toList());
 
             assertEquals(List.of("line1", "line2", "line3"), lines);
@@ -41,8 +41,9 @@ public class RemoteReaderTest {
             server.enqueue(new MockResponse().setResponseCode(500));
 
             String url = server.url("/test.log").toString();
+            Reader reader = new RemoteReader(client, url);
 
-            RuntimeException ex = assertThrows(RuntimeException.class, () -> reader.read(url));
+            RuntimeException ex = assertThrows(RuntimeException.class, () -> reader.read());
             assertTrue(ex.getMessage().contains("Ошибка соединения с сервером"));
         }
     }

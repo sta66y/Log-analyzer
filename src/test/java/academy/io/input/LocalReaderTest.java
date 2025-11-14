@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LocalReaderTest {
-    private final Reader reader = new LocalReader();
 
     @TempDir
     Path tempDir;
@@ -23,7 +22,8 @@ public class LocalReaderTest {
         List<String> lines = List.of("line1", "line2", "line3");
         Files.write(file, lines);
 
-        Stream<String> stream = reader.read(file.toString());
+        Reader reader = new LocalReader(file.toString());
+        Stream<String> stream = reader.read();
 
         List<String> readLines = stream.collect(Collectors.toList());
         assertEquals(lines, readLines);
@@ -33,7 +33,8 @@ public class LocalReaderTest {
     void read_ShouldThrowException_WhenFileDoesntExists() {
         Path file = tempDir.resolve("test.log");
 
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> reader.read(file.toString()));
+        Reader reader = new LocalReader(file.toString());
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> reader.read());
 
         assertEquals("Ошибка при чтении файла", ex.getMessage());
     }

@@ -16,13 +16,15 @@ public class RemoteReader implements Reader{
     private static final Logger logger = LogManager.getLogger(RemoteReader.class);
 
     private final HttpClient client;
+    private final String path;
 
-    public RemoteReader(HttpClient client) {
+    public RemoteReader(HttpClient client, String path) {
         this.client = client;
+        this.path = path;
     }
 
     @Override
-    public Stream<String> read(String path) {
+    public Stream<String> read() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(path))

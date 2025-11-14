@@ -11,8 +11,14 @@ import org.apache.logging.log4j.Logger;
 public class LocalReader implements Reader{
     private static final Logger logger = LogManager.getLogger(LocalReader.class);
 
+    private final String path;
+
+    public LocalReader(String path) {
+        this.path = path;
+    }
+
     @Override
-    public Stream<String> read(String path) {
+    public Stream<String> read() {
         try {
             return Files.lines(Path.of(path));
         } catch (IOException e) {
