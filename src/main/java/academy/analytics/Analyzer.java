@@ -7,17 +7,20 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class Analyzer {
+    private final AnalysisContext context;
     private final LocalDate dateFrom;
     private final LocalDate dateTo;
     private final List<AnalyzerModule> analyzerModules;
 
-    public Analyzer(LocalDate dateFrom, LocalDate dateTo, List<AnalyzerModule> analyzerModules) {
+    public Analyzer(AnalysisContext context, LocalDate dateFrom, LocalDate dateTo, List<AnalyzerModule> analyzerModules) {
+        this.context = context;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
         this.analyzerModules = analyzerModules;
     }
 
-    public Analyzer(LocalDate dateFrom, LocalDate dateTo) {
+    public Analyzer(AnalysisContext context, LocalDate dateFrom, LocalDate dateTo) {
+        this.context = context;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
 
@@ -31,17 +34,13 @@ public class Analyzer {
         );
     }
 
-    public AnalysisContext analyseLog(Stream<ParsedLog> parsedLogStream) {
-        AnalysisContext context = new AnalysisContext();
-
+    public void analyseLog(Stream<ParsedLog> parsedLogStream) {
         parsedLogStream
             .filter(this::isWithinDateRange)
             .forEach(line -> analyzerModules.forEach(module -> module.accept(line)));
 
         analyzerModules
             .forEach(module -> module.applyToContext(context));
-
-        return context;
     }
 
     private boolean isWithinDateRange(ParsedLog log) {

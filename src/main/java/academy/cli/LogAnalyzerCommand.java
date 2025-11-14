@@ -32,12 +32,10 @@ import static academy.io.input.ReaderFabric.createReader;
 public class LogAnalyzerCommand implements Runnable{
 
     private static final Logger logger = LogManager.getLogger(LogAnalyzerCommand.class);
-    private static final DateTimeFormatter DATE_FORMAT =
-        DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z"); //TODO вынести в конфиг
 
     @Option(
         names = {"-p", "--path"},
-        description = "Путь к одному или нескольким NGINX лог-файлам (файлы указывать через пробел)",
+        description = "Путь к NGINX лог-файлу",
         required = true
     )
     private List<String> paths;
@@ -71,9 +69,6 @@ public class LogAnalyzerCommand implements Runnable{
     )
     private LocalDate dateTo;
 
-
-
-
     @Override
     public void run() {
         try {
@@ -88,13 +83,15 @@ public class LogAnalyzerCommand implements Runnable{
             Parser parser = new Parser();
             Stream<ParsedLog> parsedLogStream = parser.parse(combinedStream);
 
-            Analyzer analyzer = new Analyzer(dateFrom, dateTo);
-            AnalysisContext context = analyzer.analyseLog(parsedLogStream);
-            context.setFiles(paths); //TODO подумать...
+            AnalysisContext context = new AnalysisContext();
+            context.setFiles(paths);
             context.setStartDate(dateFrom);
             context.setEndDate(dateTo);
 
-            Writer writer = WriterFabric.createWriter(format); //TODO мб пикокли конверт сразу в writer
+            Analyzer analyzer = new Analyzer(context, dateFrom, dateTo);
+            analyzer.analyseLog(parsedLogStream);
+
+            Writer writer = WriterFabric.createWriter(format);
             writer.write(output, context);
 
         } catch (Exception e) {
@@ -111,7 +108,7 @@ public class LogAnalyzerCommand implements Runnable{
         }
     }
 
-
+    //TODO валидация .log
     public static void main(String[] args) {
         int exitCode = new CommandLine(new LogAnalyzerCommand()).execute(args);
         System.exit(exitCode);

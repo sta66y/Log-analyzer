@@ -1,5 +1,6 @@
 package academy.analytics;
 
+import academy.util.AnalysisContext;
 import academy.util.ParsedLog;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +19,7 @@ import static org.mockito.Mockito.never;
 public class AnalyzerTest {
     private static List<AnalyzerModule> mockedModules;
     private Analyzer analyzer;
+    private AnalysisContext context;
 
     @BeforeEach
     void setUp() {
@@ -29,12 +31,14 @@ public class AnalyzerTest {
             mock(DateDistributionStats.class),
             mock(ProtocolStats.class)
         );
+
+        context = new AnalysisContext();
     }
 
     @Test
     @DisplayName("Проверяем, что все модули анализа вызываются")
     void analyseLog_ShouldUseAllModules() {
-        analyzer = new Analyzer(null, null, mockedModules);
+        analyzer = new Analyzer(context, null, null, mockedModules);
 
         ParsedLog testLog = new ParsedLog("10.0.0.55", "webapp-user", "admin", ZonedDateTime.parse("2023-10-15T14:50:15Z"), "PUT", "/api/users/123", "HTTP/2.0", 500, 0, "https://admin.mysite.com/users", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0");
 
@@ -50,7 +54,7 @@ public class AnalyzerTest {
     void isWithinDateRange_ShouldFilterLogsBeforeDateFrom() {
         // все логи из EXAMPLES_LOG до этой даты
         LocalDate dateFrom = LocalDate.parse("2023-10-16");
-        analyzer = new Analyzer(dateFrom, null, mockedModules);
+        analyzer = new Analyzer(context, dateFrom, null, mockedModules);
 
         analyzer.analyseLog(TestConstants.EXAMPLES_LOG.stream());
 
@@ -70,7 +74,7 @@ public class AnalyzerTest {
     void isWithinDateRange_ShouldFilterLogsAfterDateTo() {
         // все логи из EXAMPLES_LOG после этой даты
         LocalDate dateTo = LocalDate.parse("2023-10-14");
-        analyzer = new Analyzer(null, dateTo, mockedModules);
+        analyzer = new Analyzer(context, null, dateTo, mockedModules);
 
         analyzer.analyseLog(TestConstants.EXAMPLES_LOG.stream());
 
@@ -87,7 +91,7 @@ public class AnalyzerTest {
     void isWithinDateRange_ShouldProcessLogsWithinRange() {
         LocalDate dateFrom = LocalDate.parse("2023-10-14");
         LocalDate dateTo = LocalDate.parse("2023-10-16");
-        analyzer = new Analyzer(dateFrom, dateTo, mockedModules);
+        analyzer = new Analyzer(context, dateFrom, dateTo, mockedModules);
 
         analyzer.analyseLog(TestConstants.EXAMPLES_LOG.stream());
 
@@ -104,7 +108,7 @@ public class AnalyzerTest {
     @DisplayName("Фильтрация: без ограничений дат должны обрабатываться все логи")
     void isWithinDateRange_ShouldProcessAllLogsWhenNoDateRange() {
         // нет ограничений по дате
-        analyzer = new Analyzer(null, null, mockedModules);
+        analyzer = new Analyzer(context, null, null, mockedModules);
 
         analyzer.analyseLog(TestConstants.EXAMPLES_LOG.stream());
 
@@ -121,7 +125,7 @@ public class AnalyzerTest {
         // границы точно совпадают с датами логов (преобразованные в LocalDate)
         LocalDate dateFrom = LocalDate.parse("2023-10-15"); // дата второго лога
         LocalDate dateTo = LocalDate.parse("2023-10-15");   // дата последнего лога
-        analyzer = new Analyzer(dateFrom, dateTo, mockedModules);
+        analyzer = new Analyzer(context, dateFrom, dateTo, mockedModules);
 
         analyzer.analyseLog(TestConstants.EXAMPLES_LOG.stream());
 
@@ -143,7 +147,7 @@ public class AnalyzerTest {
     @Test
     @DisplayName("Фильтрация: пустой stream не должен вызывать исключений")
     void isWithinDateRange_ShouldHandleEmptyStream() {
-        analyzer = new Analyzer(null, null, mockedModules);
+        analyzer = new Analyzer(context, null, null, mockedModules);
 
         // пустой stream
         analyzer.analyseLog(Stream.empty());
@@ -158,7 +162,7 @@ public class AnalyzerTest {
     void isWithinDateRange_ShouldIncludeSameDates() {
         LocalDate dateFrom = LocalDate.parse("2023-10-15");
         LocalDate dateTo = LocalDate.parse("2023-10-15");
-        analyzer = new Analyzer(dateFrom, dateTo, mockedModules);
+        analyzer = new Analyzer(context, dateFrom, dateTo, mockedModules);
 
         // Создаем логи с разным временем но одинаковой датой
         ParsedLog morningLog = new ParsedLog("10.0.0.1", "user1", "user1",
