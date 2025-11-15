@@ -1,7 +1,7 @@
 package academy.analytics;
 
-import academy.util.AnalysisContext;
-import academy.util.ParsedLog;
+import academy.model.AnalysisContext;
+import academy.model.ParsedLog;
 import java.util.HashSet;
 import java.util.Set;
 /** уникальные используемые протоколы передачи данных */

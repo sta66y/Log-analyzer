@@ -1,6 +1,6 @@
 package academy.io.output;
 
-import academy.util.AnalysisContext;
+import academy.model.AnalysisContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -14,14 +14,13 @@ public class JsonWriter implements Writer {
         ObjectMapper mapper = new ObjectMapper();
 
         mapper.registerModule(new JavaTimeModule());
-
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         try {
             String json = mapper.writeValueAsString(context);
             Files.writeString(path, json);
-        } catch (IOException e) {
+        } catch (IOException e) { // TODO изменить выбрасываемый эксепшн
             throw new RuntimeException("Не удалось записать json в файл: " + e.getMessage());
         }
     }

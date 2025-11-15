@@ -1,8 +1,8 @@
 package academy.analytics;
 
-import academy.util.AnalysisContext;
-import academy.util.ParsedLog;
-import academy.util.ResponseSize;
+import academy.model.AnalysisContext;
+import academy.model.ParsedLog;
+import academy.model.ResponseSize;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,22 +21,26 @@ public class ResponseSizeStats implements AnalyzerModule{
 
     @Override
     public void applyToContext(AnalysisContext context) {
+        double averageValue = getSumResponseAverage(context.getTotalRequestsCount(), this.sumResponses);
+        sortAnswers();
+        int p95value = getP95(context.getTotalRequestsCount(), this.answers);
+
         context.setResponseSizeInBytes(new ResponseSize(
-            getAverage(context.getTotalRequestsCount()),
+            averageValue,
             maxResponse,
-            getP95(context.getTotalRequestsCount())));
+            p95value
+        ));
     }
 
     private void sortAnswers() {
         answers.sort(Integer::compareTo);
     }
 
-    private double getAverage(int size) {
+    private double getSumResponseAverage(int size, int sumResponses) {
         return Math.round((sumResponses / (double) size) * 100.0) / 100.0;
     }
 
-    private int getP95(int size) {
-        sortAnswers();
+    private int getP95(int size, List<Integer> answers) {
         int index = (int) Math.ceil(0.95 * size) - 1;
         return answers.get(Math.max(index, 0));
     }

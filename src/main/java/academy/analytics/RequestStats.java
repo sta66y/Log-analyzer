@@ -1,7 +1,7 @@
 package academy.analytics;
 
-import academy.util.AnalysisContext;
-import academy.util.ParsedLog;
+import academy.model.AnalysisContext;
+import academy.model.ParsedLog;
 
 /** Собирает статистику общего количества запросов */
 public class RequestStats implements AnalyzerModule {

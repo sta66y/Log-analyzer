@@ -1,8 +1,8 @@
 package academy.analytics;
 
-import academy.util.AnalysisContext;
-import academy.util.Date;
-import academy.util.ParsedLog;
+import academy.model.AnalysisContext;
+import academy.model.Date;
+import academy.model.ParsedLog;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;

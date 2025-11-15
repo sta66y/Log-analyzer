@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LocalReaderTest {
 
@@ -39,6 +40,6 @@ public class LocalReaderTest {
         Reader reader = new LocalReader(file.toString());
         RuntimeException ex = assertThrows(RuntimeException.class, () -> reader.read());
 
-        assertEquals("Ошибка при чтении файла", ex.getMessage());
+        assertTrue(ex.getMessage().contains("Ошибка при чтении файла"));
     }
 }

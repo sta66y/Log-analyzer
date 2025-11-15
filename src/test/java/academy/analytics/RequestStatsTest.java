@@ -1,7 +1,7 @@
 package academy.analytics;
 
-import academy.util.AnalysisContext;
-import academy.util.ParsedLog;
+import academy.model.AnalysisContext;
+import academy.model.ParsedLog;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

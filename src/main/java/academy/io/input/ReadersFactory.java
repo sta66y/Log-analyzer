@@ -1,5 +1,7 @@
 package academy.io.input;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -10,8 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class ReadersFabric {
-    public static List<Reader> createReaders(List<String> paths) {
+
+public class ReadersFactory {
+    private static final Logger logger = LogManager.getLogger(ReadersFactory.class);
+
+    public static List<Reader> createReaders(List<String> paths) throws IOException {
         List<Reader> readers = new ArrayList<>();
         List<String> errors = new ArrayList<>();
 
@@ -19,30 +24,34 @@ public class ReadersFabric {
             try {
                 if (path.startsWith("http")) {
                     readers.add(new RemoteReader(path));
+                    logger.info("Добавлен reader для {}", path);
                 } else if (containsGlobCharacters(path)) {
+                    logger.info("Начата обработка glob: {}", path);
                     processGlobPattern(path, readers);
                 } else if (isValidLogFile(path)) {
                     readers.add(new LocalReader(path));
+                    logger.info("Добавлен reader: {}", path);
                 } else {
                     errors.add("Неподдерживаемый формат файла: " + path);
                 }
-            } catch (Exception e) {
-                errors.add("Ошибка обработки пути '" + path + "': " + e.getMessage());
+            } catch (IOException e) {
+                errors.add("Ошибка обработки пути " + path + ": " + e.getMessage());
             }
         }
 
         if (!errors.isEmpty()) {
-            throw new RuntimeException("Ошибки при чтении файлов:\n" + String.join("\n", errors));
+            throw new IOException("Ошибки при чтении файлов:\n" + String.join("\n", errors));
         }
 
         if (readers.isEmpty()) {
-            throw new RuntimeException("Подходящих файлов не обнаружено");
+            throw new IOException("Подходящих файлов не обнаружено"); //TODO может другая ex
         }
 
         return readers;
     }
 
     private static boolean isValidLogFile(String path) {
+        logger.info("Валидация файла {}", path);
         String lowerPath = path.toLowerCase();
         return (lowerPath.endsWith(".log") || lowerPath.endsWith(".txt"))
             && Files.exists(Paths.get(path))
@@ -65,7 +74,10 @@ public class ReadersFabric {
                     String name = p.toString().toLowerCase();
                     return name.endsWith(".log") || name.endsWith(".txt");
                 })
-                .forEach(p -> readers.add(new LocalReader(p.toString())));
+                .forEach(p -> {
+                    readers.add(new LocalReader(p.toString()));
+                    logger.info("Добавлен reader: {}", p);}
+                );
         }
     }
 
@@ -88,3 +100,5 @@ public class ReadersFabric {
         return path.contains("*") || path.contains("?") || path.contains("[") || path.contains("{");
     }
 }
+
+//TODO может разделить?

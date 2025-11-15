@@ -1,7 +1,7 @@
 package academy.analytics;
 
-import academy.util.AnalysisContext;
-import academy.util.ParsedLog;
+import academy.model.AnalysisContext;
+import academy.model.ParsedLog;
 
 public interface AnalyzerModule {
     void accept(ParsedLog log);

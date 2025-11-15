@@ -1,6 +1,6 @@
 package academy.analytics;
 
-import academy.util.ParsedLog;
+import academy.model.ParsedLog;
 import java.time.ZonedDateTime;
 import java.util.List;
 

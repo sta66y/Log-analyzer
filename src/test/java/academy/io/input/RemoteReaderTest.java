@@ -2,6 +2,7 @@ package academy.io.input;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.http.HttpClient;
@@ -16,6 +17,7 @@ public class RemoteReaderTest {
     private final HttpClient client = HttpClient.newHttpClient();
 
     @Test
+    @DisplayName("Должен возвращать поток, если ответ 200")
     void read_ShouldReturnStream_WhenHttp200() throws IOException {
         try (MockWebServer server = new MockWebServer()) {
             server.start();
@@ -34,6 +36,7 @@ public class RemoteReaderTest {
     }
 
     @Test
+    @DisplayName("Должен выбрасывать ошибку, если ответ не 200")
     void read_ShouldThrowException_WhenHttpNot200() throws IOException {
         try (MockWebServer server = new MockWebServer()) {
             server.start();

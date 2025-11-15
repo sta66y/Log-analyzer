@@ -1,7 +1,7 @@
 package academy.analytics;
 
-import academy.util.AnalysisContext;
-import academy.util.Date;
+import academy.model.AnalysisContext;
+import academy.model.Date;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.util.List;

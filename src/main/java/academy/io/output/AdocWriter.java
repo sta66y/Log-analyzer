@@ -1,10 +1,10 @@
 package academy.io.output;
 
-import academy.util.AnalysisContext;
-import academy.util.Date;
-import academy.util.Resource;
-import academy.util.ResponseCode;
-import academy.util.ResponseSize;
+import academy.model.AnalysisContext;
+import academy.model.Date;
+import academy.model.Resource;
+import academy.model.ResponseCode;
+import academy.model.ResponseSize;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -124,10 +124,11 @@ public class AdocWriter implements Writer {
     }
 
     private String formatResponseSizesDisplay(ResponseSize responseSize, String kind) {
+
         if (kind.equals("max")) return Integer.toString(responseSize.max());
         if (kind.equals("average")) return Double.toString(responseSize.average());
         if (kind.equals("p95")) return Integer.toString(responseSize.p95());
-        throw new RuntimeException("че");
+        throw new RuntimeException("че"); // TODO изменить возвращаемое значение
     }
 
     private String formatTotalRequestsDisplay(int totalRequestsCount) {

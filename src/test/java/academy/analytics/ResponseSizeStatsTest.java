@@ -1,7 +1,7 @@
 package academy.analytics;
 
-import academy.util.AnalysisContext;
-import academy.util.ResponseSize;
+import academy.model.AnalysisContext;
+import academy.model.ResponseSize;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static academy.analytics.TestConstants.EXAMPLES_LOG;

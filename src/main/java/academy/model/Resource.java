@@ -1,4 +1,4 @@
-package academy.util;
+package academy.model;
 
 public record Resource (
     String resource,

@@ -1,8 +1,8 @@
 package academy.analytics;
 
-import academy.util.AnalysisContext;
-import academy.util.ParsedLog;
-import academy.util.ResponseCode;
+import academy.model.AnalysisContext;
+import academy.model.ParsedLog;
+import academy.model.ResponseCode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

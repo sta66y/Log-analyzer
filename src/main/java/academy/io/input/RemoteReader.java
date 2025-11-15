@@ -12,7 +12,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.stream.Stream;
 
-public class RemoteReader implements Reader{
+public class RemoteReader implements Reader {
     private static final Logger logger = LogManager.getLogger(RemoteReader.class);
 
     private final HttpClient client;
@@ -31,6 +31,7 @@ public class RemoteReader implements Reader{
     @Override
     public Stream<String> read() {
         try {
+            logger.info("Попытка подключения к {}", path);
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(path))
                 .GET()
@@ -41,8 +42,10 @@ public class RemoteReader implements Reader{
                 HttpResponse.BodyHandlers.ofInputStream()
             );
 
+            logger.info("HTTP статус: {} для URL: {}", response.statusCode(), path);
+
             if (response.statusCode() != 200) {
-                logger.error("Ошибка соединения с сервером: {}", response.statusCode());
+                logger.error("Ошибка {} для URL: {}", response.statusCode(), path);
                 throw new IOException("Ошибка соединения с сервером: " + response.statusCode());
             }
 
@@ -51,7 +54,7 @@ public class RemoteReader implements Reader{
 
         } catch (InterruptedException e) {
             logger.error("Прерывание при HTTP-запросе");
-            throw new RuntimeException("Прерывание при HTTP-запросе", e);
+            throw new RuntimeException("Прерывание при HTTP-запросе");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

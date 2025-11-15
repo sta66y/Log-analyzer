@@ -4,10 +4,12 @@ import academy.analytics.Analyzer;
 import academy.cli.converter.OutputFormatTypeConverter;
 import academy.enums.OutputFormats;
 import academy.io.input.Reader;
-import academy.io.input.ReadersFabric;
+import academy.io.input.ReadersFactory;
 import academy.io.output.Writer;
 import academy.io.output.WriterFabric;
-import academy.util.AnalysisContext;
+import academy.model.AnalysisContext;
+import academy.parser.LogsParser;
+import academy.parser.PathParser;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Command;
@@ -38,7 +40,7 @@ public class LogAnalyzerCommand implements Runnable{
         names = {"-f", "--format"},
         converter = OutputFormatTypeConverter.class,
         description = "Формат вывода результатов: ${COMPLETION-CANDIDATES}",
-        required = false
+        required = true
     )
     private OutputFormats format;
 
@@ -66,21 +68,30 @@ public class LogAnalyzerCommand implements Runnable{
     @Override
     public void run() {
         try {
+            logger.info("Валидация dateFrom и dateTo");
             validateDates();
 
-            List<Reader> readers = ReadersFabric.createReaders(paths);
+            logger.info("Создание reader для каждого файла");
+            List<Reader> readers = ReadersFactory.createReaders(paths);
 
-            Analyzer analyzer = new Analyzer();
+            PathParser pathParser = new PathParser();
+            LogsParser logsParser = new LogsParser(pathParser);
+
+            logger.info("Создание analyzer");
+            Analyzer analyzer = new Analyzer(logsParser);
             AnalysisContext context = analyzer.analyse(readers, dateFrom, dateTo);
 
+            logger.info("Создание writer по {}", format);
             Writer writer = WriterFabric.createWriter(format);
+
+            logger.info("Запись результатов анализа в файл");
             writer.write(output, context);
+            logger.info("Результат успешно записан в файл {} в формате {}", output, format);
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
             System.exit(2);
         }
-
     }
 
     private void validateDates() {
@@ -94,5 +105,4 @@ public class LogAnalyzerCommand implements Runnable{
         int exitCode = new CommandLine(new LogAnalyzerCommand()).execute(args);
         System.exit(exitCode);
     }
-
 }

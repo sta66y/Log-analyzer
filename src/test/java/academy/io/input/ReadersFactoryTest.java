@@ -11,17 +11,17 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ReadersFabricTest {
+class ReadersFactoryTest {
 
     @TempDir
     Path tempDir;
 
     @Test
     @DisplayName("Должен создать RemoteReader для HTTP URL")
-    void createReaders_ShouldCreateRemoteReaderForHttpUrl() {
+    void createReaders_ShouldCreateRemoteReaderForHttpUrl() throws IOException {
         List<String> paths = List.of("http://example.com/");
 
-        List<Reader> readers = ReadersFabric.createReaders(paths);
+        List<Reader> readers = ReadersFactory.createReaders(paths);
 
         assertEquals(1, readers.size());
         assertInstanceOf(RemoteReader.class, readers.get(0));
@@ -30,10 +30,10 @@ class ReadersFabricTest {
 
     @Test
     @DisplayName("Должен создать RemoteReader для HTTPS URL")
-    void createReaders_ShouldCreateRemoteReaderForHttpsUrl() {
+    void createReaders_ShouldCreateRemoteReaderForHttpsUrl() throws IOException {
         List<String> paths = List.of("https://example.com/");
 
-        List<Reader> readers = ReadersFabric.createReaders(paths);
+        List<Reader> readers = ReadersFactory.createReaders(paths);
 
         assertEquals(1, readers.size());
         assertInstanceOf(RemoteReader.class, readers.get(0));
@@ -46,7 +46,7 @@ class ReadersFabricTest {
         Files.createFile(logFile);
         List<String> paths = List.of(logFile.toString());
 
-        List<Reader> readers = ReadersFabric.createReaders(paths);
+        List<Reader> readers = ReadersFactory.createReaders(paths);
 
         assertEquals(1, readers.size());
         assertInstanceOf(LocalReader.class, readers.get(0));
@@ -60,7 +60,7 @@ class ReadersFabricTest {
         Files.createFile(txtFile);
         List<String> paths = List.of(txtFile.toString());
 
-        List<Reader> readers = ReadersFabric.createReaders(paths);
+        List<Reader> readers = ReadersFactory.createReaders(paths);
 
         assertEquals(1, readers.size());
         assertInstanceOf(LocalReader.class, readers.get(0));
@@ -76,7 +76,7 @@ class ReadersFabricTest {
 
         String globPattern = tempDir.toString() + "/*.log";
 
-        List<Reader> readers = ReadersFabric.createReaders(List.of(globPattern));
+        List<Reader> readers = ReadersFactory.createReaders(List.of(globPattern));
 
         assertEquals(3, readers.size());
         assertTrue(readers.stream().allMatch(r -> r instanceof LocalReader));
@@ -93,7 +93,7 @@ class ReadersFabricTest {
 
         String globPattern = tempDir.toString() + "/**/*.log";
 
-        List<Reader> readers = ReadersFabric.createReaders(List.of(globPattern));
+        List<Reader> readers = ReadersFactory.createReaders(List.of(globPattern));
 
         assertEquals(2, readers.size());
         assertTrue(readers.stream().allMatch(r -> r instanceof LocalReader));
@@ -104,8 +104,8 @@ class ReadersFabricTest {
     void createReaders_ShouldThrowExceptionForNonExistentGlobDirectory() {
         String globPattern = "/non/existent/dir/*.log";
 
-        RuntimeException exception = assertThrows(RuntimeException.class,
-            () -> ReadersFabric.createReaders(List.of(globPattern)));
+        IOException exception = assertThrows(IOException.class,
+            () -> ReadersFactory.createReaders(List.of(globPattern)));
 
         assertTrue(exception.getMessage().contains("Директория не существует"));
     }
@@ -117,8 +117,8 @@ class ReadersFabricTest {
         Files.createFile(unsupportedFile);
         List<String> paths = List.of(unsupportedFile.toString());
 
-        RuntimeException exception = assertThrows(RuntimeException.class,
-            () -> ReadersFabric.createReaders(paths));
+        IOException exception = assertThrows(IOException.class,
+            () -> ReadersFactory.createReaders(paths));
 
         assertTrue(exception.getMessage().contains("Неподдерживаемый формат файла"));
     }
@@ -128,8 +128,8 @@ class ReadersFabricTest {
     void createReaders_ShouldThrowExceptionForEmptyPaths() {
         List<String> paths = List.of();
 
-        RuntimeException exception = assertThrows(RuntimeException.class,
-            () -> ReadersFabric.createReaders(paths));
+        IOException exception = assertThrows(IOException.class,
+            () -> ReadersFactory.createReaders(paths));
 
         assertTrue(exception.getMessage().contains("Подходящих файлов не обнаружено"));
     }
@@ -138,6 +138,6 @@ class ReadersFabricTest {
     @DisplayName("Исключение при null путях")
     void createReaders_ShouldThrowExceptionForNullPaths() {
         assertThrows(NullPointerException.class,
-            () -> ReadersFabric.createReaders(null));
+            () -> ReadersFactory.createReaders(null));
     }
 }

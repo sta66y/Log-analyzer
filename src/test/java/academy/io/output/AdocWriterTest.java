@@ -1,24 +1,26 @@
 package academy.io.output;
 
-import academy.util.*;
+import academy.model.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
 
+import static academy.io.output.AnalysisContextFactory.createEmptyContext;
+import static academy.io.output.AnalysisContextFactory.createTestContext;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AdocWriterTest {
     private final Writer writer = new AdocWriter();
 
+    @TempDir
+    Path tempDir;
+
     @Test
     @DisplayName("Должен создавать AsciiDoc файл с правильной структурой")
-    void shouldCreateAsciiDocFileWithCorrectStructure(@TempDir Path tempDir) throws Exception {
+    void shouldCreateAsciiDocFileWithCorrectStructure() throws Exception {
         AnalysisContext context = createTestContext();
         Path outputFile = tempDir.resolve("test_report.adoc");
 
@@ -42,7 +44,7 @@ class AdocWriterTest {
 
     @Test
     @DisplayName("Должен правильно отображать общую информацию в таблице")
-    void shouldDisplayGeneralInformationInTable(@TempDir Path tempDir) throws Exception {
+    void shouldDisplayGeneralInformationInTable() throws Exception {
         AnalysisContext context = createTestContext();
         Path outputFile = tempDir.resolve("general_info.adoc");
 
@@ -68,7 +70,7 @@ class AdocWriterTest {
 
     @Test
     @DisplayName("Должен правильно форматировать список файлов в общей информации")
-    void shouldFormatFilesListInGeneralInfo(@TempDir Path tempDir) throws Exception {
+    void shouldFormatFilesListInGeneralInfo() throws Exception {
         AnalysisContext context = createTestContext();
         Path outputFile = tempDir.resolve("files_format.adoc");
 
@@ -82,7 +84,7 @@ class AdocWriterTest {
 
     @Test
     @DisplayName("Должен отображать таблицу ресурсов с правильными данными")
-    void shouldDisplayResourcesTableWithCorrectData(@TempDir Path tempDir) throws Exception {
+    void shouldDisplayResourcesTableWithCorrectData() throws Exception {
         AnalysisContext context = createTestContext();
         Path outputFile = tempDir.resolve("resources.adoc");
 
@@ -101,7 +103,7 @@ class AdocWriterTest {
 
     @Test
     @DisplayName("Должен отображать таблицу HTTP кодов с правильными именами")
-    void shouldDisplayHttpCodesTableWithCorrectNames(@TempDir Path tempDir) throws Exception {
+    void shouldDisplayHttpCodesTableWithCorrectNames() throws Exception {
         AnalysisContext context = createTestContext();
         Path outputFile = tempDir.resolve("http_codes.adoc");
 
@@ -127,7 +129,7 @@ class AdocWriterTest {
 
     @Test
     @DisplayName("Должен отображать статистику по датам в правильном формате")
-    void shouldDisplayDateStatisticsInCorrectFormat(@TempDir Path tempDir) throws Exception {
+    void shouldDisplayDateStatisticsInCorrectFormat() throws Exception {
         AnalysisContext context = createTestContext();
         Path outputFile = tempDir.resolve("dates.adoc");
 
@@ -146,7 +148,7 @@ class AdocWriterTest {
 
     @Test
     @DisplayName("Должен отображать таблицу протоколов")
-    void shouldDisplayProtocolsTable(@TempDir Path tempDir) throws Exception {
+    void shouldDisplayProtocolsTable() throws Exception {
         AnalysisContext context = createTestContext();
         Path outputFile = tempDir.resolve("protocols.adoc");
 
@@ -164,7 +166,7 @@ class AdocWriterTest {
 
     @Test
     @DisplayName("Должен обрабатывать контекст с пустыми данными")
-    void shouldHandleContextWithEmptyData(@TempDir Path tempDir) throws Exception {
+    void shouldHandleContextWithEmptyData() throws Exception {
         AnalysisContext emptyContext = createEmptyContext();
         Path outputFile = tempDir.resolve("empty.adoc");
 
@@ -178,7 +180,7 @@ class AdocWriterTest {
 
     @Test
     @DisplayName("Должен выбрасывать исключение при ошибке записи файла")
-    void shouldThrowExceptionOnWriteError(@TempDir Path tempDir) {
+    void shouldThrowExceptionOnWriteError() {
         Path invalidPath = tempDir.resolve("nonexistent/directory/report.adoc");
 
         AnalysisContext context = createTestContext();
@@ -187,49 +189,5 @@ class AdocWriterTest {
             () -> writer.write(invalidPath, context));
 
         assertTrue(exception.getMessage().contains("Не удалось записать AsciiDoc в файл"));
-    }
-
-
-    private AnalysisContext createTestContext() {
-        AnalysisContext context = new AnalysisContext();
-
-        context.setFiles(List.of("access.log", "http://example.com/access.log"));
-
-        context.setStartDate(LocalDate.now().minusDays(7));
-        context.setEndDate(LocalDate.now());
-
-        context.setTotalRequestsCount(10000);
-        context.setResponseSizeInBytes(new ResponseSize(500.0, 1000, 950));
-
-        context.setResources(List.of(
-            new Resource("/downloads/product_1", 1000),
-            new Resource("/downloads/product_2", 100)
-        ));
-
-        context.setResponseCodes(List.of(
-            new ResponseCode(200, 1000),
-            new ResponseCode(401, 10),
-            new ResponseCode(500, 1)
-        ));
-
-        context.setRequestsPerDate(List.of(
-            new Date("2024-03-01", "Monday", 2981, 12.1)
-        ));
-
-        context.setUniqueProtocols(Set.of("HTTP/1.1", "HTTP/2.0", "grpc"));
-
-        return context;
-    }
-
-    private AnalysisContext createEmptyContext() {
-        AnalysisContext context = new AnalysisContext();
-        context.setFiles(List.of());
-        context.setTotalRequestsCount(0);
-        context.setResponseSizeInBytes(new ResponseSize(0.0, 0, 0));
-        context.setResources(List.of());
-        context.setResponseCodes(List.of());
-        context.setRequestsPerDate(List.of());
-        context.setUniqueProtocols(Set.of());
-        return context;
     }
 }

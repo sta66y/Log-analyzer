@@ -1,24 +1,30 @@
 package academy.analytics;
 
+import academy.cli.LogAnalyzerCommand;
 import academy.io.input.Reader;
-import academy.parser.Parser;
-import academy.util.AnalysisContext;
-import academy.util.ParsedLog;
+import academy.parser.LogsParser;
+import academy.model.AnalysisContext;
+import academy.model.ParsedLog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class Analyzer {
+    private static final Logger logger = LogManager.getLogger(Analyzer.class);
+
     private final List<AnalyzerModule> analyzerModules;
-    private final Parser parser;
+    private final LogsParser logsParser;
 
 
-    public Analyzer (List<AnalyzerModule> analyzerModules, Parser parser) {
+    public Analyzer(List<AnalyzerModule> analyzerModules, LogsParser logsParser) {
         this.analyzerModules = analyzerModules;
-        this.parser = parser;
+        this.logsParser = logsParser;
     }
 
-    public Analyzer () {
+    public Analyzer (LogsParser logsParser) {
         this.analyzerModules = List.of( // важен порядок вызова: 1-м вызывается RequestStats, так как он сохраняет в контекст количество запросов, которое используется и в других классах
             new RequestStats(),
             new ResponseSizeStats(),
@@ -26,27 +32,24 @@ public class Analyzer {
             new TopResourcesStats(),
             new DateDistributionStats(),
             new ProtocolStats());
-        this.parser = new Parser();
+        this.logsParser = logsParser;
     }
 
-    public AnalysisContext analyse(List<Reader> readers, LocalDate dateFrom, LocalDate dateTo) {
+    public AnalysisContext analyse(List<Reader> readers, LocalDate dateFrom, LocalDate dateTo) throws IOException {
+        logger.info("Создание контекста");
         AnalysisContext context = createContext(readers, dateFrom, dateTo);
 
-        Stream<ParsedLog> parsedLogs = parseAndFilterLogs(readers, dateFrom, dateTo);
-        processLogs(parsedLogs);
+        logger.info("Парсинг и фильтрация строк");
+        Stream<ParsedLog> parsedLogs = logsParser.parseAndFilterLogs(readers, dateFrom, dateTo);
+        logger.info("Сбор статистики");
+        analyzeLogs(parsedLogs);
+        logger.info("Заполнение результатов в контекст");
         applyResultsToContext(context);
 
         return context;
     }
 
-    private Stream<ParsedLog> parseAndFilterLogs(List<Reader> readers, LocalDate dateFrom, LocalDate dateTo) {
-        return readers.stream()
-            .flatMap(Reader::read)
-            .map(parser::parseLine)
-            .filter(parsedLog -> isWithinDateRange(parsedLog, dateFrom, dateTo));
-    }
-
-    private void processLogs(Stream<ParsedLog> parsedLogs) {
+    private void analyzeLogs(Stream<ParsedLog> parsedLogs) {
         parsedLogs.forEach(log ->
             analyzerModules.forEach(module -> module.accept(log))
         );
@@ -63,13 +66,5 @@ public class Analyzer {
         context.setEndDate(dateTo);
 
         return context;
-    }
-
-    private boolean isWithinDateRange(ParsedLog log, LocalDate dateFrom, LocalDate dateTo) {
-        LocalDate logDate = log.date().toLocalDate();
-
-        if (dateFrom != null && logDate.isBefore(dateFrom)) return false;
-        if (dateTo != null && logDate.isAfter(dateTo)) return false;
-        return true;
     }
 }

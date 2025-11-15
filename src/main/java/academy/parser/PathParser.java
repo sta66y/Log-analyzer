@@ -1,17 +1,13 @@
 package academy.parser;
 
-import academy.util.ParsedLog;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import academy.model.ParsedLog;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
-public class Parser {
-    private final Logger logger = LogManager.getLogger(Parser.class);
+public class PathParser {
 
     private static final DateTimeFormatter DATE_FORMAT =
         DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z");
@@ -29,17 +25,12 @@ public class Parser {
             "\"(?<referrer>[^\"]+)\"\\s" +
             "\"(?<userAgent>[^\"]+)\"");
 
-    public ParsedLog parseLine(String log) {
+    public ParsedLog parseLine(String log) throws IOException {
 
         Matcher matcher = PATTERN.matcher(log);
 
         if (!matcher.matches()) {
-            try {
-                logger.error("Ошибка парсинга. Строка не соответствует паттерну: {}", log);
-                throw new IOException("Ошибка парсинга. Строка не соответствует паттерну: " + log);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            throw new IOException("Ошибка парсинга. Строка не соответствует паттерну: " + log);
         }
 
         String ip = matcher.group("id");

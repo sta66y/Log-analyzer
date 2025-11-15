@@ -1,10 +1,10 @@
 package academy.io.output;
 
-import academy.util.AnalysisContext;
-import academy.util.Date;
-import academy.util.Resource;
-import academy.util.ResponseCode;
-import academy.util.ResponseSize;
+import academy.model.AnalysisContext;
+import academy.model.Date;
+import academy.model.Resource;
+import academy.model.ResponseCode;
+import academy.model.ResponseSize;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
