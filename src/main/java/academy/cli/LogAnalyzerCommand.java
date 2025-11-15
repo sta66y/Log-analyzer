@@ -4,9 +4,9 @@ import academy.analytics.Analyzer;
 import academy.cli.converter.OutputFormatTypeConverter;
 import academy.enums.OutputFormats;
 import academy.io.input.Reader;
-import academy.io.input.ReadersFactory;
 import academy.io.output.Writer;
-import academy.io.output.WriterFabric;
+import academy.util.ReadersCreator;
+import academy.util.WriterFactory;
 import academy.model.AnalysisContext;
 import academy.parser.LogsParser;
 import academy.parser.PathParser;
@@ -71,33 +71,27 @@ public class LogAnalyzerCommand implements Runnable{
             logger.info("Валидация dateFrom и dateTo");
             validateDates();
 
-            logger.info("Создание reader для каждого файла");
-            List<Reader> readers = ReadersFactory.createReaders(paths);
+            List<Reader> readers = ReadersCreator.createReaders(paths);
 
-            PathParser pathParser = new PathParser();
-            LogsParser logsParser = new LogsParser(pathParser);
-
-            logger.info("Создание analyzer");
-            Analyzer analyzer = new Analyzer(logsParser);
+            Analyzer analyzer = new Analyzer(new LogsParser(new PathParser()));
             AnalysisContext context = analyzer.analyse(readers, dateFrom, dateTo);
 
             logger.info("Создание writer по {}", format);
-            Writer writer = WriterFabric.createWriter(format);
+            Writer writer = WriterFactory.createWriter(format);
 
             logger.info("Запись результатов анализа в файл");
             writer.write(output, context);
             logger.info("Результат успешно записан в файл {} в формате {}", output, format);
 
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            logger.fatal(e.getMessage());
             System.exit(2);
         }
     }
 
     private void validateDates() {
         if (dateFrom != null && dateTo != null && dateFrom.isAfter(dateTo)) {
-            logger.error("--from не может быть позже, чем --to");
-            throw new IllegalArgumentException("--from не может быть позже, чем --to");
+            throw new IllegalArgumentException("Ошибка валидации дат: --from не может быть позже, чем --to");
         }
     }
 
