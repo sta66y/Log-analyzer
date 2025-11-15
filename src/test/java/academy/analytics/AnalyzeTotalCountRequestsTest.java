@@ -7,14 +7,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RequestStatsTest {
+public class AnalyzeTotalCountRequestsTest {
     private AnalyzerModule analyzer;
     private AnalysisContext context;
 
     @BeforeEach
     void createContext() {
         context = new AnalysisContext();
-        analyzer = new RequestStats();
+        analyzer = new AnalyzeTotalCountRequests();
     }
 
     @Test

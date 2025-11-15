@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import static academy.analytics.TestConstants.EXAMPLES_LOG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ResponseSizeStatsTest {
-    private AnalyzerModule analyzer = new ResponseSizeStats();
+public class AnalyzeResponseSizeTest {
+    private AnalyzerModule analyzer = new AnalyzeResponseSize();
     private AnalysisContext context = new AnalysisContext();
 
     @Test

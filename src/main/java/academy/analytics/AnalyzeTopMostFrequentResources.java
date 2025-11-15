@@ -11,9 +11,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /** Выводит топ-10 наиболее часто запрашиваемых ресурсов, отсортированных по убыванию */
-public class TopResourcesStats implements AnalyzerModule {
-    private final Map<String, Integer> frequency = new HashMap<>();
-
+public class AnalyzeTopMostFrequentResources implements AnalyzerModule {
+    private final Map<String, Integer> frequencyResources = new HashMap<>();
 
     @Override
     public void accept(ParsedLog log) {
@@ -25,17 +24,18 @@ public class TopResourcesStats implements AnalyzerModule {
         context.setResources(getResources());
     }
 
+    /** Сортирует ресурсы по количеству запросов и возвращает топ-10. */
     private List<Resource> getResources() {
         List<Resource> resources = new ArrayList<>(10);
-        frequency.forEach((key, value) -> resources.add(new Resource(key, value)));
+        frequencyResources.forEach((key, value) -> resources.add(new Resource(key, value)));
         return resources.stream()
             .sorted(Comparator.comparingInt(Resource::totalRequestsCount).reversed())
-            .limit(10) //TODO мб вынести в конфиг
+            .limit(10)
             .collect(Collectors.toList());
     }
 
     private void addToCounter(ParsedLog log) {
         String resource = log.resource();
-        frequency.put(resource, frequency.getOrDefault(resource, 0) + 1);
+        frequencyResources.put(resource, frequencyResources.getOrDefault(resource, 0) + 1);
     }
 }

@@ -9,8 +9,8 @@ import static academy.analytics.TestConstants.EXAMPLES_LOG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class StatusCodeStatsTest {
-    private final AnalyzerModule analyzer = new StatusCodeStats();
+public class AnalyzeResponseCodesFrequencyTest {
+    private final AnalyzerModule analyzer = new AnalyzeResponseCodesFrequency();
     private final AnalysisContext context = new AnalysisContext();
 
     @Test

@@ -8,8 +8,8 @@ import java.util.List;
 import static academy.analytics.TestConstants.EXAMPLES_LOG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DateDistributionStatsTest {
-    private final AnalyzerModule analyzer = new DateDistributionStats();
+public class AnalyzeDateDistributionTest {
+    private final AnalyzerModule analyzer = new AnalyzeDateDistribution();
     private final AnalysisContext context = new AnalysisContext();
 
     @Test

@@ -4,8 +4,11 @@ import academy.model.AnalysisContext;
 import academy.model.ParsedLog;
 import java.util.HashSet;
 import java.util.Set;
-/** уникальные используемые протоколы передачи данных */
-public class ProtocolStats implements AnalyzerModule{
+/**
+ * Собирает статистику по уникальным протоколам в логах. <br>
+ * Подсчитывает, какие HTTP протоколы используются в запросах.
+ */
+public class AnalyzeUniqueProtocols implements AnalyzerModule{
     private final Set<String> protocols = new HashSet<>();
 
     @Override

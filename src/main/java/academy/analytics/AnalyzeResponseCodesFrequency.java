@@ -8,9 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Считает частоту встречаемых кодов ответа */
-public class StatusCodeStats implements AnalyzerModule{
-    private final Map<Integer, Integer> frequency = new HashMap<>();
+/**
+ * Собирает статистику по HTTP кодам ответов.
+ * Подсчитывает частоту каждого кода состояния в логах.
+ */
+public class AnalyzeResponseCodesFrequency implements AnalyzerModule{
+    private final Map<Integer, Integer> frequencyResponseCodes = new HashMap<>();
 
     @Override
     public void accept(ParsedLog log) {
@@ -22,14 +25,17 @@ public class StatusCodeStats implements AnalyzerModule{
         context.setResponseCodes(getResponseCodes());
     }
 
+    /** Преобразует собранную статистику в список кодов ответов. */
     private List<ResponseCode> getResponseCodes() {
         List<ResponseCode> responseCodes = new ArrayList<>();
-        frequency.forEach((key, value) -> responseCodes.add(new ResponseCode(key, value)));
+        frequencyResponseCodes.forEach((code, count) ->
+            responseCodes.add(new ResponseCode(code, count))
+        );
         return responseCodes;
     }
 
     private void addToCounter(ParsedLog log) {
         int response = log.httpResponse();
-        frequency.put(response, frequency.getOrDefault(response, 0) + 1);
+        frequencyResponseCodes.put(response, frequencyResponseCodes.getOrDefault(response, 0) + 1);
     }
 }

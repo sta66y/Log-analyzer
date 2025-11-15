@@ -39,12 +39,12 @@ public class AnalyzerTest {
     @BeforeEach
     void setUp() {
         mockedModules = List.of(
-            mock(RequestStats.class),
-            mock(ResponseSizeStats.class),
-            mock(StatusCodeStats.class),
-            mock(TopResourcesStats.class),
-            mock(DateDistributionStats.class),
-            mock(ProtocolStats.class)
+            mock(AnalyzeTotalCountRequests.class),
+            mock(AnalyzeResponseSize.class),
+            mock(AnalyzeResponseCodesFrequency.class),
+            mock(AnalyzeTopMostFrequentResources.class),
+            mock(AnalyzeDateDistribution.class),
+            mock(AnalyzeUniqueProtocols.class)
         );
     }
 
