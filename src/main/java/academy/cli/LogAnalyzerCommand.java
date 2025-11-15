@@ -3,7 +3,9 @@ package academy.cli;
 import academy.analytics.Analyzer;
 import academy.cli.converter.OutputFormatTypeConverter;
 import academy.enums.OutputFormats;
+import academy.io.input.LocalReader;
 import academy.io.input.Reader;
+import academy.io.input.RemoteReader;
 import academy.io.output.Writer;
 import academy.io.output.WriterFabric;
 import academy.util.AnalysisContext;
@@ -12,17 +14,21 @@ import academy.parser.Parser;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Command;
+import java.io.IOException;
+import java.net.http.HttpClient;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import static academy.io.input.ReaderFabric.createReader;
 
 @Command(
     name = "Анализатор логов NGINX",
@@ -74,17 +80,25 @@ public class LogAnalyzerCommand implements Runnable{
         try {
             validateDates();
 
-            Stream<String> combinedStream = paths.stream()
-                .flatMap(path -> {
-                    Reader reader = createReader(path);
-                    return reader.read(path);
-                });
+            AnalysisContext context = new AnalysisContext();
+            context.setStartDate(dateFrom);
+            context.setEndDate(dateTo);
+
+            List<Reader> readers = getReaders(paths);
+
+            List<String> files = readers.stream()
+                .map(Reader::getPath)
+                .toList();
+
+            context.setFiles(files);
+
+            Stream<String> combinedStream = readers.stream()
+                .flatMap(Reader::read);
+
 
             Parser parser = new Parser();
             Stream<ParsedLog> parsedLogStream = parser.parse(combinedStream);
 
-            AnalysisContext context = new AnalysisContext();
-            context.setFiles(paths);
             context.setStartDate(dateFrom);
             context.setEndDate(dateTo);
 
@@ -101,6 +115,83 @@ public class LogAnalyzerCommand implements Runnable{
 
     }
 
+    private List<Reader> getReaders(List<String> paths) {
+        List<Reader> readers = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
+
+        for (String path : paths) {
+            try {
+                if (path.startsWith("http")) {
+                    readers.add(new RemoteReader(path));
+                } else if (containsGlobCharacters(path)) {
+                    processGlobPattern(path, readers);
+                } else if (isValidLogFile(path)) {
+                    readers.add(new LocalReader(path));
+                } else {
+                    errors.add("Неподдерживаемый формат файла: " + path);
+                }
+            } catch (Exception e) {
+                errors.add("Ошибка обработки пути '" + path + "': " + e.getMessage());
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            throw new RuntimeException("Ошибки при чтении файлов:\n" + String.join("\n", errors));
+        }
+
+        if (readers.isEmpty()) {
+            throw new RuntimeException("Подходящих файлов не обнаружено");
+        }
+
+        return readers;
+    }
+
+    private boolean isValidLogFile(String path) {
+        String lowerPath = path.toLowerCase();
+        return (lowerPath.endsWith(".log") || lowerPath.endsWith(".txt"))
+            && Files.exists(Paths.get(path))
+            && Files.isRegularFile(Paths.get(path));
+    }
+
+    private void processGlobPattern(String globPattern, List<Reader> readers) throws IOException {
+        PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + globPattern);
+        Path root = extractRoot(globPattern);
+
+        if (!Files.exists(root)) {
+            throw new IOException("Директория не существует: " + root);
+        }
+
+        try (Stream<Path> stream = Files.walk(root)) {
+            stream
+                .filter(Files::isRegularFile)
+                .filter(matcher::matches)
+                .filter(p -> {
+                    String name = p.toString().toLowerCase();
+                    return name.endsWith(".log") || name.endsWith(".txt");
+                })
+                .forEach(p -> readers.add(new LocalReader(p.toString())));
+        }
+    }
+
+    private Path extractRoot(String path) {
+        Path pathObj = Paths.get(path);
+        Path root = Paths.get("/");
+
+        for (Path part : pathObj) {
+            if (!containsGlobCharacters(part.toString())) {
+                root = root.resolve(part);
+            } else {
+                break;
+            }
+        }
+
+        return root;
+    }
+
+    private boolean containsGlobCharacters(String path) {
+        return path.contains("*") || path.contains("?") || path.contains("[") || path.contains("{");
+    }
+
     private void validateDates() {
         if (dateFrom != null && dateTo != null && dateFrom.isAfter(dateTo)) {
             logger.error("--from не может быть позже, чем --to");
@@ -108,10 +199,10 @@ public class LogAnalyzerCommand implements Runnable{
         }
     }
 
-    //TODO валидация .log
     public static void main(String[] args) {
         int exitCode = new CommandLine(new LogAnalyzerCommand()).execute(args);
         System.exit(exitCode);
     }
 
 }
+//TODO toLowerCase сделать
