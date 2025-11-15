@@ -7,18 +7,20 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
 
+import static academy.io.output.AnalysisContextFactory.createEmptyContext;
+import static academy.io.output.AnalysisContextFactory.createTestContext;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JsonWriterTest {
     private final Writer writer = new JsonWriter();
 
+    @TempDir
+    Path tempDir;
+
     @Test
     @DisplayName("Должен создавать JSON файл с правильной структурой")
-    void shouldCreateJsonFileWithCorrectStructure(@TempDir Path tempDir) throws Exception {
+    void shouldCreateJsonFileWithCorrectStructure() throws Exception {
         AnalysisContext context = createTestContext();
         Path outputFile = tempDir.resolve("test_report.json");
 
@@ -41,7 +43,7 @@ class JsonWriterTest {
 
     @Test
     @DisplayName("Должен правильно отображать общую информацию в JSON")
-    void shouldDisplayGeneralInformationInJson(@TempDir Path tempDir) throws Exception {
+    void shouldDisplayGeneralInformationInJson() throws Exception {
         AnalysisContext context = createTestContext();
         Path outputFile = tempDir.resolve("general_info.json");
 
@@ -61,7 +63,7 @@ class JsonWriterTest {
 
     @Test
     @DisplayName("Должен правильно форматировать список файлов в JSON")
-    void shouldFormatFilesListInJson(@TempDir Path tempDir) throws Exception {
+    void shouldFormatFilesListInJson() throws Exception {
         AnalysisContext context = createTestContext();
         Path outputFile = tempDir.resolve("files_format.json");
 
@@ -75,7 +77,7 @@ class JsonWriterTest {
 
     @Test
     @DisplayName("Должен отображать ресурсы с правильными данными в JSON")
-    void shouldDisplayResourcesWithCorrectDataInJson(@TempDir Path tempDir) throws Exception {
+    void shouldDisplayResourcesWithCorrectDataInJson() throws Exception {
         AnalysisContext context = createTestContext();
         Path outputFile = tempDir.resolve("resources.json");
 
@@ -93,7 +95,7 @@ class JsonWriterTest {
 
     @Test
     @DisplayName("Должен отображать HTTP коды с правильными именами в JSON")
-    void shouldDisplayHttpCodesWithCorrectNamesInJson(@TempDir Path tempDir) throws Exception {
+    void shouldDisplayHttpCodesWithCorrectNamesInJson() throws Exception {
         AnalysisContext context = createTestContext();
         Path outputFile = tempDir.resolve("http_codes.json");
 
@@ -113,7 +115,7 @@ class JsonWriterTest {
 
     @Test
     @DisplayName("Должен отображать статистику по датам в правильном формате в JSON")
-    void shouldDisplayDateStatisticsInCorrectFormatInJson(@TempDir Path tempDir) throws Exception {
+    void shouldDisplayDateStatisticsInCorrectFormatInJson() throws Exception {
         AnalysisContext context = createTestContext();
         Path outputFile = tempDir.resolve("dates.json");
 
@@ -131,7 +133,7 @@ class JsonWriterTest {
 
     @Test
     @DisplayName("Должен отображать протоколы в JSON")
-    void shouldDisplayProtocolsInJson(@TempDir Path tempDir) throws Exception {
+    void shouldDisplayProtocolsInJson() throws Exception {
         AnalysisContext context = createTestContext();
         Path outputFile = tempDir.resolve("protocols.json");
 
@@ -148,7 +150,7 @@ class JsonWriterTest {
 
     @Test
     @DisplayName("Должен обрабатывать контекст с пустыми данными")
-    void shouldHandleContextWithEmptyData(@TempDir Path tempDir) throws Exception {
+    void shouldHandleContextWithEmptyData() throws Exception {
         AnalysisContext emptyContext = createEmptyContext();
         Path outputFile = tempDir.resolve("empty.json");
 
@@ -163,7 +165,7 @@ class JsonWriterTest {
 
     @Test
     @DisplayName("Должен выбрасывать исключение при ошибке записи файла")
-    void shouldThrowExceptionOnWriteError(@TempDir Path tempDir) {
+    void shouldThrowExceptionOnWriteError() {
         Path invalidPath = tempDir.resolve("nonexistent/directory/report.json");
 
         AnalysisContext context = createTestContext();
@@ -174,46 +176,4 @@ class JsonWriterTest {
         assertTrue(exception.getMessage().contains("Не удалось записать json в файл"));
     }
 
-    private AnalysisContext createTestContext() {
-        AnalysisContext context = new AnalysisContext();
-
-        context.setFiles(List.of("access.log", "http://example.com/access.log"));
-
-        context.setStartDate(LocalDate.now().minusDays(7));
-        context.setEndDate(LocalDate.now());
-
-        context.setTotalRequestsCount(10000);
-        context.setResponseSizeInBytes(new ResponseSize(500.0, 1000, 950));
-
-        context.setResources(List.of(
-            new Resource("/downloads/product_1", 1000),
-            new Resource("/downloads/product_2", 100)
-        ));
-
-        context.setResponseCodes(List.of(
-            new ResponseCode(200, 1000),
-            new ResponseCode(401, 10),
-            new ResponseCode(500, 1)
-        ));
-
-        context.setRequestsPerDate(List.of(
-            new Date("2024-03-01", "Monday", 2981, 12.1)
-        ));
-
-        context.setUniqueProtocols(Set.of("HTTP/1.1", "HTTP/2.0", "grpc"));
-
-        return context;
-    }
-
-    private AnalysisContext createEmptyContext() {
-        AnalysisContext context = new AnalysisContext();
-        context.setFiles(List.of());
-        context.setTotalRequestsCount(0);
-        context.setResponseSizeInBytes(new ResponseSize(0.0, 0, 0));
-        context.setResources(List.of());
-        context.setResponseCodes(List.of());
-        context.setRequestsPerDate(List.of());
-        context.setUniqueProtocols(Set.of());
-        return context;
-    }
 }

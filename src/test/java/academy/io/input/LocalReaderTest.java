@@ -1,5 +1,6 @@
 package academy.io.input;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
@@ -17,6 +18,7 @@ public class LocalReaderTest {
     Path tempDir;
 
     @Test
+    @DisplayName("Должен возвращать поток строк, если файл существует")
     void read_ShouldReturnStreamString_WhenFileExists() throws IOException {
         Path file = tempDir.resolve("test.log");
         List<String> lines = List.of("line1", "line2", "line3");
@@ -30,6 +32,7 @@ public class LocalReaderTest {
     }
 
     @Test
+    @DisplayName("Должен выбрасывать ошибку, если файла не существует")
     void read_ShouldThrowException_WhenFileDoesntExists() {
         Path file = tempDir.resolve("test.log");
 
