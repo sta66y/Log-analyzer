@@ -26,4 +26,9 @@ public class LocalReader implements Reader{
             throw new RuntimeException("Ошибка при чтении файла");
         }
     }
+
+    @Override
+    public String getPath() {
+        return path;
+    }
 }

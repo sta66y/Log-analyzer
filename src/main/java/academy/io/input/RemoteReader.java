@@ -23,6 +23,11 @@ public class RemoteReader implements Reader{
         this.path = path;
     }
 
+    public RemoteReader(String path) {
+        this.path = path;
+        this.client = HttpClient.newHttpClient();
+    }
+
     @Override
     public Stream<String> read() {
         try {
@@ -50,5 +55,10 @@ public class RemoteReader implements Reader{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String getPath() {
+        return path;
     }
 }
