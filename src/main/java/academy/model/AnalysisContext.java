@@ -8,7 +8,7 @@ import java.util.Set;
 public class AnalysisContext {
     private List<String> files;
     private int totalRequestsCount;
-    private ResponseSize responseSize;
+    private ResponseSize responseSizeInBytes;
     private List<Resource> resources;
     private List<ResponseCode> responseCodes;
     private List<Date> requestsPerDate;
@@ -32,12 +32,12 @@ public class AnalysisContext {
         this.totalRequestsCount = totalRequestsCount;
     }
 
-    public ResponseSize getResponseSize() {
-        return responseSize;
+    public ResponseSize getResponseSizeInBytes() {
+        return responseSizeInBytes;
     }
 
-    public void setResponseSize(ResponseSize responseSize) {
-        this.responseSize = responseSize;
+    public void setResponseSizeInBytes(ResponseSize responseSizeInBytes) {
+        this.responseSizeInBytes = responseSizeInBytes;
     }
 
     public List<Resource> getResources() {

@@ -20,7 +20,7 @@ public class LocalReaderTest {
 
     @Test
     @DisplayName("Должен возвращать поток строк, если файл существует")
-    void read_ShouldReturnStreamString_WhenFileExists() throws IOException {
+    void read_ShouldReturnStreamString_WhenFileExists() throws IOException, InterruptedException {
         Path file = tempDir.resolve("test.log");
         List<String> lines = List.of("line1", "line2", "line3");
         Files.write(file, lines);
@@ -38,7 +38,7 @@ public class LocalReaderTest {
         Path file = tempDir.resolve("test.log");
 
         Reader reader = new LocalReader(file.toString());
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> reader.read());
+        IOException ex = assertThrows(IOException.class, () -> reader.read());
 
         assertTrue(ex.getMessage().contains("Ошибка при чтении файла"));
     }

@@ -19,7 +19,7 @@ public class AnalyzeResponseSizeTest {
         EXAMPLES_LOG.forEach(analyzer::accept);
         analyzer.applyToContext(context);
 
-        ResponseSize responseSizeInContext = context.getResponseSize();
+        ResponseSize responseSizeInContext = context.getResponseSizeInBytes();
         assertEquals(321.2, responseSizeInContext.averageValue(),
             "Значение averageValue не соответствует действительности");
         assertEquals(500, responseSizeInContext.maxValue(),

@@ -18,7 +18,7 @@ public class RemoteReaderTest {
 
     @Test
     @DisplayName("Должен возвращать поток, если ответ 200")
-    void read_ShouldReturnStream_WhenHttp200() throws IOException {
+    void read_ShouldReturnStream_WhenHttp200() throws IOException, InterruptedException {
         try (MockWebServer server = new MockWebServer()) {
             server.start();
 

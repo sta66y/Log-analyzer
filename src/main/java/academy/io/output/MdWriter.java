@@ -31,11 +31,11 @@ public class MdWriter implements Writer {
         md.append("| Конечная дата | ").append(endDateDisplay).append(" |\n");
         String totalRequestsDisplay = WriterUtil.formatTotalRequestsDisplay(context.getTotalRequestsCount());
         md.append("| Количество запросов | ").append(totalRequestsDisplay).append(" |\n");
-        String maxSizeResponseDisplay = WriterUtil.formatResponseSize(context.getResponseSize(), "maxValue");
+        String maxSizeResponseDisplay = WriterUtil.formatResponseSize(context.getResponseSizeInBytes(), "maxValue");
         md.append("| Максимальный ответ ответа | ").append(maxSizeResponseDisplay).append(" |\n");
-        String averageResponseDisplay = WriterUtil.formatResponseSize(context.getResponseSize(), "averageValue");
+        String averageResponseDisplay = WriterUtil.formatResponseSize(context.getResponseSizeInBytes(), "averageValue");
         md.append("| Средний размер ответа | ").append(averageResponseDisplay).append(" |\n");
-        String p95ResponseDisplay = WriterUtil.formatResponseSize(context.getResponseSize(), "p95Value");
+        String p95ResponseDisplay = WriterUtil.formatResponseSize(context.getResponseSizeInBytes(), "p95Value");
         md.append("| 95p ответ ответа | ").append(p95ResponseDisplay).append(" |\n\n");
 
         md.append("#### Запрашиваемые ресурсы\n");

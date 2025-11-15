@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -170,7 +171,7 @@ class JsonWriterTest {
 
         AnalysisContext context = createTestContext();
 
-        RuntimeException exception = assertThrows(RuntimeException.class,
+        IOException exception = assertThrows(IOException.class,
             () -> writer.write(invalidPath, context));
 
         assertTrue(exception.getMessage().contains("Не удалось записать json в файл"));

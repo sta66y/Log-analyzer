@@ -33,7 +33,7 @@ public class AdocWriter implements Writer {
         adoc.append("| Конечная дата | ").append(WriterUtil.formatDisplayDate(context.getDateTo())).append("\n");
         adoc.append("| Количество запросов | ").append(WriterUtil.formatTotalRequestsDisplay(context.getTotalRequestsCount())).append("\n");
 
-        ResponseSize size = context.getResponseSize();
+        ResponseSize size = context.getResponseSizeInBytes();
         if (size != null) {
             adoc.append("| Максимальный размер ответа | ").append(WriterUtil.formatResponseSize(size, "maxValue")).append("\n");
             adoc.append("| Средний размер ответа | ").append(WriterUtil.formatResponseSize(size, "averageValue")).append("\n");
