@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/** Парсит строки логов NGINX в структурированный формат.` */
 public class PathParser {
 
     private static final DateTimeFormatter DATE_FORMAT =
@@ -25,6 +26,13 @@ public class PathParser {
             "\"(?<referrer>[^\"]+)\"\\s" +
             "\"(?<userAgent>[^\"]+)\"");
 
+    /**
+     * Парсит строку лога в структурированный объект.
+     *
+     * @param log строка лога в формате NGINX
+     * @return распарсенная запись лога
+     * @throws IOException если строка не соответствует ожидаемому формату
+     */
     public ParsedLog parseLine(String log) throws IOException {
 
         Matcher matcher = PATTERN.matcher(log);

@@ -14,30 +14,54 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * Обрабатывает glob паттерны для поиска файлов.
+ */
 public class GlobProcessor {
     private static final Logger logger = LogManager.getLogger(GlobProcessor.class);
 
+    /**
+     * Обрабатывает glob паттерн и создает readers для найденных файлов.
+     *
+     * @param globPattern паттерн для поиска файлов (например, "logs/*.log")
+     * @return список readers для найденных лог-файлов
+     * @throws IOException если директория не существует или ошибка доступа
+     */
     public static List<Reader> processGlobPattern(String globPattern) throws IOException {
         List<Reader> readers = new ArrayList<>();
-        PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + globPattern);
+        PathMatcher matcher = createPathMatcher(globPattern);
         Path root = extractRoot(globPattern);
 
-        if (!Files.exists(root)) {
-            throw new IOException("Директория не существует: " + root);
-        }
+        validateRootDirectory(root);
 
         try (Stream<Path> stream = Files.walk(root)) {
             stream
                 .filter(Files::isRegularFile)
                 .filter(matcher::matches)
-                .filter(p -> FileValidator.isValidLogFile(p.toString()))
-                .forEach(p -> {
-                    readers.add(new LocalReader(p.toString()));
-                    logger.info("Создан LocalReader по glob для: {}", p);
-                });
+                .filter(GlobProcessor::isValidLogFile)
+                .forEach(file -> addReader(readers, file));
         }
 
         return readers;
+    }
+
+    private static PathMatcher createPathMatcher(String pattern) {
+        return FileSystems.getDefault().getPathMatcher("glob:" + pattern);
+    }
+
+    private static void validateRootDirectory(Path root) throws IOException {
+        if (!Files.exists(root)) {
+            throw new IOException("Директория не существует: " + root);
+        }
+    }
+
+    private static boolean isValidLogFile(Path file) {
+        return FileValidator.isValidLogFile(file.toString());
+    }
+
+    private static void addReader(List<Reader> readers, Path file) {
+        readers.add(new LocalReader(file.toString()));
+        logger.debug("Добавлен файл: {}", file);
     }
 
     private static Path extractRoot(String path) {
@@ -45,13 +69,12 @@ public class GlobProcessor {
         Path root = pathObj.isAbsolute() ? pathObj.getRoot() : Paths.get("");
 
         for (Path part : pathObj) {
-            if (!containsGlobCharacters(part.toString())) {
-                root = root.resolve(part);
-            } else {
+            if (containsGlobCharacters(part.toString())) {
                 break;
             }
+            root = root.resolve(part);
         }
-        return root;
+        return root.normalize();
     }
 
     private static boolean containsGlobCharacters(String path) {

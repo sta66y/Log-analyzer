@@ -8,9 +8,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/** Записывает данные из контекста в файл в формате json*/
 public class JsonWriter implements Writer {
     @Override
-    public void write(Path path, AnalysisContext context) {
+    public void write(Path path, AnalysisContext context) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
         mapper.registerModule(new JavaTimeModule());
@@ -20,8 +21,8 @@ public class JsonWriter implements Writer {
         try {
             String json = mapper.writeValueAsString(context);
             Files.writeString(path, json);
-        } catch (IOException e) { // TODO изменить выбрасываемый эксепшн
-            throw new RuntimeException("Не удалось записать json в файл: " + e.getMessage());
+        } catch (IOException e) {
+            throw new IOException("Не удалось записать json в файл: " + e.getMessage());
         }
     }
 }

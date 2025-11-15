@@ -4,16 +4,17 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+/** Хранит всю статистику проведенного анализа */
 public class AnalysisContext {
     private List<String> files;
     private int totalRequestsCount;
-    private ResponseSize responseSizeInBytes;
+    private ResponseSize responseSize;
     private List<Resource> resources;
     private List<ResponseCode> responseCodes;
     private List<Date> requestsPerDate;
     private Set<String> uniqueProtocols;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDate dateFrom;
+    private LocalDate dateTo;
 
     public List<String> getFiles() {
         return files;
@@ -31,12 +32,12 @@ public class AnalysisContext {
         this.totalRequestsCount = totalRequestsCount;
     }
 
-    public ResponseSize getResponseSizeInBytes() {
-        return responseSizeInBytes;
+    public ResponseSize getResponseSize() {
+        return responseSize;
     }
 
-    public void setResponseSizeInBytes(ResponseSize responseSizeInBytes) {
-        this.responseSizeInBytes = responseSizeInBytes;
+    public void setResponseSize(ResponseSize responseSize) {
+        this.responseSize = responseSize;
     }
 
     public List<Resource> getResources() {
@@ -71,19 +72,19 @@ public class AnalysisContext {
         this.uniqueProtocols = uniqueProtocols;
     }
 
-    public LocalDate getEndDate() {
-        return endDate;
+    public LocalDate getDateTo() {
+        return dateTo;
     }
 
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
+    public void setDateTo(LocalDate dateTo) {
+        this.dateTo = dateTo;
     }
 
-    public LocalDate getStartDate() {
-        return startDate;
+    public LocalDate getDateFrom() {
+        return dateFrom;
     }
 
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
+    public void setDateFrom(LocalDate dateFrom) {
+        this.dateFrom = dateFrom;
     }
 }

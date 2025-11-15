@@ -7,10 +7,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Создает readers для различных типов путей.
+ * Обрабатывает локальные файлы, URL и glob паттерны.
+ * Собирает все ошибки обработки и выбрасывает их одним исключением.
+ */
 public class ReadersCreator {
     private static final Logger logger = LogManager.getLogger(ReadersCreator.class);
 
+    /**
+     * Создает readers для указанных путей.
+     *
+     * @param paths список путей к файлам, URL или glob паттернов
+     * @return список созданных readers
+     * @throws IOException если пути невалидны или не найдено подходящих файлов
+     */
     public static List<Reader> createReaders(List<String> paths) throws IOException {
         List<Reader> readers = new ArrayList<>();
         List<String> errors = new ArrayList<>();
@@ -42,6 +53,7 @@ public class ReadersCreator {
         return readers;
     }
 
+    /** Проверяет содержит ли путь glob символы. */
     private static boolean containsGlobCharacters(String path) {
         return path.contains("*") || path.contains("?") || path.contains("[") || path.contains("{");
     }

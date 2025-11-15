@@ -2,6 +2,7 @@ package academy.model;
 
 import java.time.ZonedDateTime;
 
+/** Распарсенная запись лога */
 public record ParsedLog(
     String ip,
     String clientId,

@@ -1,7 +1,8 @@
 package academy.model;
 
+/** Статистика размеров ответов. */
 public record ResponseSize(
-    double average,
-    int max,
-    int p95
+    double averageValue,
+    int maxValue,
+    int p95Value
 ) {}

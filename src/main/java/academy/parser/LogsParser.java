@@ -8,12 +8,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public record LogsParser(PathParser pathParser) {
+/**  Парсит и фильтрует логи по дате. */
+public class LogsParser {
+    private final PathParser pathParser;
 
+    public LogsParser(PathParser pathParser) {
+        this.pathParser = pathParser;
+    }
+    /**
+     * Парсит и фильтрует логи по диапазону дат.
+     *
+     * @param readers список источников логов
+     * @param dateFrom начальная дата (включительно)
+     * @param dateTo конечная дата (включительно)
+     * @return поток распарсенных логов в указанном диапазоне дат
+     * @throws IOException если произошла ошибка чтения
+     */
     public Stream<ParsedLog> parseAndFilterLogs(List<Reader> readers, LocalDate dateFrom, LocalDate dateTo) throws IOException {
-        List<String> allLines = readers.stream()
-            .flatMap(Reader::read)
-            .toList();
+        List<String> allLines = new ArrayList<>();
+
+        for (Reader reader : readers) {
+            try (Stream<String> lines = reader.read()) {
+                allLines.addAll(lines.toList());
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IOException("Чтение прервано: " + reader.getPath(), e);
+            }
+        }
 
         List<ParsedLog> parsedLogs = new ArrayList<>();
         for (String line : allLines) {

@@ -16,11 +16,11 @@ public class AnalysisContextFactory {
 
         context.setFiles(List.of("access.log", "http://example.com/access.log"));
 
-        context.setStartDate(LocalDate.now().minusDays(7));
-        context.setEndDate(LocalDate.now());
+        context.setDateFrom(LocalDate.now().minusDays(7));
+        context.setDateTo(LocalDate.now());
 
         context.setTotalRequestsCount(10000);
-        context.setResponseSizeInBytes(new ResponseSize(500.0, 1000, 950));
+        context.setResponseSize(new ResponseSize(500.0, 1000, 950));
 
         context.setResources(List.of(
             new Resource("/downloads/product_1", 1000),
@@ -46,7 +46,7 @@ public class AnalysisContextFactory {
         AnalysisContext context = new AnalysisContext();
         context.setFiles(List.of());
         context.setTotalRequestsCount(0);
-        context.setResponseSizeInBytes(new ResponseSize(0.0, 0, 0));
+        context.setResponseSize(new ResponseSize(0.0, 0, 0));
         context.setResources(List.of());
         context.setResponseCodes(List.of());
         context.setRequestsPerDate(List.of());

@@ -116,8 +116,8 @@ public class Analyzer {
     private AnalysisContext createContext(List<Reader> readers, LocalDate dateFrom, LocalDate dateTo) {
         AnalysisContext context = new AnalysisContext();
         context.setFiles(readers.stream().map(Reader::getPath).toList());
-        context.setStartDate(dateFrom);
-        context.setEndDate(dateTo);
+        context.setDateFrom(dateFrom);
+        context.setDateTo(dateTo);
 
         return context;
     }

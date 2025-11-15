@@ -12,6 +12,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.stream.Stream;
 
+/** Читает логи из удаленного источника по HTTP/HTTPS. */
 public class RemoteReader implements Reader {
     private static final Logger logger = LogManager.getLogger(RemoteReader.class);
 
@@ -29,7 +30,7 @@ public class RemoteReader implements Reader {
     }
 
     @Override
-    public Stream<String> read() {
+    public Stream<String> read() throws InterruptedException {
         try {
             logger.info("Попытка подключения к {}", path);
             HttpRequest request = HttpRequest.newBuilder()
@@ -54,7 +55,7 @@ public class RemoteReader implements Reader {
 
         } catch (InterruptedException e) {
             logger.error("Прерывание при HTTP-запросе");
-            throw new RuntimeException("Прерывание при HTTP-запросе");
+            throw new InterruptedException("Прерывание при HTTP-запросе");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

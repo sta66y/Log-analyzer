@@ -78,8 +78,8 @@ public class AnalyzerTest {
         }
 
         assertEquals(List.of("/path/to/file1.log", "/path/to/file2.log"), result.getFiles());
-        assertNull(result.getStartDate());
-        assertNull(result.getEndDate());
+        assertNull(result.getDateFrom());
+        assertNull(result.getDateTo());
     }
 
     @Test
