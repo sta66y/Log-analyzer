@@ -29,18 +29,14 @@ public class Parser {
             "\"(?<referrer>[^\"]+)\"\\s" +
             "\"(?<userAgent>[^\"]+)\"");
 
-    public Stream<ParsedLog> parse(Stream<String> stream) {
-        return stream.map(log -> parseLine(log));
-    }
-
-    private ParsedLog parseLine(String log) {
+    public ParsedLog parseLine(String log) {
 
         Matcher matcher = PATTERN.matcher(log);
 
         if (!matcher.matches()) {
             try {
                 logger.error("Ошибка парсинга. Строка не соответствует паттерну: {}", log);
-                throw new IOException("Ошибка парсинга. Строка не соответствует паттерну");
+                throw new IOException("Ошибка парсинга. Строка не соответствует паттерну: " + log);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
