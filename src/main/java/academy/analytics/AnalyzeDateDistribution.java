@@ -23,6 +23,8 @@ public class AnalyzeDateDistribution implements AnalyzerModule {
 
     @Override
     public void applyToContext(AnalysisContext context) {
+        int totalRequestCount = context.getTotalRequestsCount();
+        if (totalRequestCount == 0) return; // обработка случая, когда нет логов
         context.setRequestsPerDate(getRequestsPerDate(context.getTotalRequestsCount()));
     }
 

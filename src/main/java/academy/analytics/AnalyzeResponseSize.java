@@ -21,6 +21,9 @@ public class AnalyzeResponseSize implements AnalyzerModule {
     public void applyToContext(AnalysisContext context) {
         responses.sort(Integer::compareTo);
 
+        int totalRequestCount = context.getTotalRequestsCount();
+        if (totalRequestCount == 0) return; // обработка случая, когда нет логов
+
         context.setResponseSizeInBytes(new ResponseSize(
             calculateAverage(context.getTotalRequestsCount()),
             maxResponse,
