@@ -5,6 +5,7 @@ import academy.cli.converter.OutputFormatTypeConverter;
 import academy.enums.OutputFormats;
 import academy.io.input.Reader;
 import academy.io.output.Writer;
+import academy.util.FileValidator;
 import academy.util.ReadersCreator;
 import academy.util.WriterFactory;
 import academy.model.AnalysisContext;
@@ -89,14 +90,17 @@ public class LogAnalyzerCommand implements Callable<Integer> {
             Analyzer analyzer = new Analyzer(new LogsParser(new PathParser()));
             AnalysisContext context = analyzer.analyse(readers, dateFrom, dateTo);
 
+            logger.info("Проверка output");
+            FileValidator.isValidOutputPath(output, format);
+
             logger.info("Сохранение результатов в формате {}", format);
             Writer writer = WriterFactory.createWriter(format);
             writer.write(output, context);
 
             logger.info("Анализ завершен. Результат сохранен в: {}", output);
             return 0;
-        } catch (IOException e) {
-            logger.fatal("Ошибка при выполнении анализа: {}", e.getMessage());
+        } catch (IOException | IllegalArgumentException e) {
+            logger.fatal("Ошибка выполнения: {}", e.getMessage());
             return 2;
         } catch (Exception e) {
             logger.fatal("Непредвиденная ошибка");
@@ -112,10 +116,5 @@ public class LogAnalyzerCommand implements Callable<Integer> {
         if (dateFrom != null && dateTo != null && dateFrom.isAfter(dateTo)) {
             throw new IllegalArgumentException("Дата начала не может быть позже даты окончания");
         }
-    }
-
-    public static void main(String[] args) {
-        int exitCode = new CommandLine(new LogAnalyzerCommand()).execute(args);
-        System.exit(exitCode);
     }
 }
