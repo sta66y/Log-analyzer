@@ -12,7 +12,7 @@ public class AnalyzeUniqueProtocolsTest {
     private final AnalysisContext context = new AnalysisContext();
 
     @Test
-    @DisplayName("Проверка работы accept + записывания данных в context")
+    @DisplayName("Проверка работы accept + записывание данных в context")
     void statusCodeTest() {
         EXAMPLES_LOG.forEach(analyzer::accept);
         analyzer.applyToContext(context);

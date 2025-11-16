@@ -12,7 +12,7 @@ public class AnalyzeResponseSizeTest {
     private AnalysisContext context = new AnalysisContext();
 
     @Test
-    @DisplayName("Проверка работы accept + записывания данных в context")
+    @DisplayName("Проверка работы accept + записывание данных в context")
     void responseSizeTest() {
         context.setTotalRequestsCount(EXAMPLES_LOG.size()); // перед ResponseSizeStats должен вызываться ResponseStats, который устанавливает количество запросов в контекс
 
