@@ -10,7 +10,7 @@ public interface Reader {
      * Читает данные и возвращает их в виде потока строк.
 
      * @return поток строк логов
-     * @throws RuntimeException если произошла ошибка при чтении
+     * @throws IOException если произошла ошибка при чтении
      */
     Stream<String> read() throws IOException, InterruptedException;
 

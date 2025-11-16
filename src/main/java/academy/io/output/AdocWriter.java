@@ -16,7 +16,7 @@ import java.util.Set;
 public class AdocWriter implements Writer {
 
     @Override
-    public void write(Path path, AnalysisContext context) {
+    public void write(Path path, AnalysisContext context) throws IOException {
         StringBuilder adoc = new StringBuilder();
 
         adoc.append("= Анализ логов NGINX\n");
@@ -100,7 +100,7 @@ public class AdocWriter implements Writer {
         try {
             Files.writeString(path, adoc.toString());
         } catch (IOException e) {
-            throw new RuntimeException("Не удалось записать AsciiDoc в файл", e);
+            throw new IOException("Не удалось записать AsciiDoc в файл", e);
         }
     }
 

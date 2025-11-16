@@ -34,17 +34,22 @@ public class GlobProcessor {
 
         validateRootDirectory(root);
 
+        List<Path> matchingFiles;
         try (Stream<Path> stream = Files.walk(root)) {
-            stream
+            matchingFiles = stream
                 .filter(Files::isRegularFile)
                 .filter(matcher::matches)
-                .filter(GlobProcessor::isValidLogFile)
-                .forEach(file -> addReader(readers, file));
+                .toList();
+        }
+
+        for (Path file : matchingFiles) {
+            if (isValidLogFile(file)) {
+                addReader(readers, file);
+            }
         }
 
         return readers;
     }
-
     private static PathMatcher createPathMatcher(String pattern) {
         return FileSystems.getDefault().getPathMatcher("glob:" + pattern);
     }
@@ -55,7 +60,7 @@ public class GlobProcessor {
         }
     }
 
-    private static boolean isValidLogFile(Path file) {
+    private static boolean isValidLogFile(Path file) throws IOException {
         return FileValidator.isValidLogFile(file.toString());
     }
 

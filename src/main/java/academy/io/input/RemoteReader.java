@@ -30,7 +30,7 @@ public class RemoteReader implements Reader {
     }
 
     @Override
-    public Stream<String> read() throws InterruptedException {
+    public Stream<String> read() throws InterruptedException, IOException {
         try {
             logger.info("Попытка подключения к {}", path);
             HttpRequest request = HttpRequest.newBuilder()
@@ -54,10 +54,9 @@ public class RemoteReader implements Reader {
             return reader.lines();
 
         } catch (InterruptedException e) {
-            logger.error("Прерывание при HTTP-запросе");
             throw new InterruptedException("Прерывание при HTTP-запросе");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IOException("Ошибка соединения с сервером");
         }
     }
 

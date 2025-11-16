@@ -46,7 +46,7 @@ public class RemoteReaderTest {
             String url = server.url("/test.log").toString();
             Reader reader = new RemoteReader(client, url);
 
-            RuntimeException ex = assertThrows(RuntimeException.class, () -> reader.read());
+            IOException ex = assertThrows(IOException.class, () -> reader.read());
             assertTrue(ex.getMessage().contains("Ошибка соединения с сервером"));
         }
     }

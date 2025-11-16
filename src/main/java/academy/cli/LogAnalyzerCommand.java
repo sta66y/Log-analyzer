@@ -13,9 +13,11 @@ import academy.parser.PathParser;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Command;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +32,7 @@ import org.apache.logging.log4j.Logger;
     version = "1.0",
     mixinStandardHelpOptions = true
 )
-public class LogAnalyzerCommand implements Runnable {
+public class LogAnalyzerCommand implements Callable<Integer> {
 
     private static final Logger logger = LogManager.getLogger(LogAnalyzerCommand.class);
 
@@ -75,7 +77,7 @@ public class LogAnalyzerCommand implements Runnable {
      * Читает логи, анализирует их и сохраняет результат в указанном формате.
      */
     @Override
-    public void run() {
+    public Integer call() {
         try {
             logger.info("Запуск анализатора логов");
             validateDates();
@@ -92,10 +94,13 @@ public class LogAnalyzerCommand implements Runnable {
             writer.write(output, context);
 
             logger.info("Анализ завершен. Результат сохранен в: {}", output);
-
-        } catch (Exception e) {
+            return 0;
+        } catch (IOException e) {
             logger.fatal("Ошибка при выполнении анализа: {}", e.getMessage());
-            System.exit(2);
+            return 2;
+        } catch (Exception e) {
+            logger.fatal("Непредвиденная ошибка");
+            return 1;
         }
     }
 
