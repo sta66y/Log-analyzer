@@ -94,7 +94,7 @@ public class LogAnalyzerCommand implements Runnable {
             logger.info("Анализ завершен. Результат сохранен в: {}", output);
 
         } catch (Exception e) {
-            logger.error("Ошибка при выполнении анализа", e);
+            logger.fatal("Ошибка при выполнении анализа: {}", e.getMessage());
             System.exit(2);
         }
     }
