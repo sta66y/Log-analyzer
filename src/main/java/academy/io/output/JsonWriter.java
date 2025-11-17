@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
 /** Записывает данные из контекста в файл в формате json*/
 public class JsonWriter implements Writer {
@@ -21,9 +22,10 @@ public class JsonWriter implements Writer {
 
         try {
             String json = mapper.writeValueAsString(context);
-            Files.writeString(path, json);
+            Files.writeString(path, json, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
         } catch (IOException e) {
-            throw new IOException("Не удалось записать json в файл: ", e);
+            throw new IOException("Не удалось записать json в файл: " + path + " - " + e.getMessage(), e);
         }
     }
 }

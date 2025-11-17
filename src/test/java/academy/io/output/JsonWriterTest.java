@@ -167,7 +167,7 @@ class JsonWriterTest {
     @Test
     @DisplayName("Должен выбрасывать исключение при ошибке записи файла")
     void shouldThrowExceptionOnWriteError() {
-        Path invalidPath = tempDir.resolve("nonexistent/directory/report.json");
+        Path invalidPath = tempDir.resolve("asdfasdf/asd/fsdr.json");
 
         AnalysisContext context = createTestContext();
 

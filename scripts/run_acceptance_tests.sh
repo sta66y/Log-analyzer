@@ -2,6 +2,10 @@
 
 # Note: script is expected to be run from root directory during the pipeline
 
+echo "Cleaning output directory..."
+rm -f ./scripts/data/output/stats.json
+rm -f ./scripts/data/output/output*.json
+
 echo 'Running acceptance tests...'
 
 tag=$CI_PROJECT_NAME-$CI_COMMIT_SHA
@@ -102,7 +106,7 @@ runTest "negative" "unsupported parameter is present" 2 \
   -p /tmp/input/nonexistent.txt -f json -o /tmp/data/output/output14.json --custom=argument
 
 runTest "positive" "properly calculate statistics from multiple local files" 0 \
-  -p /tmp/input/logs**.txt -f json -o /tmp/data/output/stats.json
+  -p /tmp/data/input/logs/*.txt -f json -o /tmp/data/output/stats.json
 
 assertJsonEquals ./scripts/data/output/expected.json ./scripts/data/output/stats.json
 
