@@ -1,6 +1,9 @@
 package academy.parser;
 
+import academy.analytics.Analyzer;
 import academy.model.ParsedLog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,6 +12,9 @@ import java.util.regex.Pattern;
 
 /** Парсит строки логов NGINX в структурированный формат.` */
 public class PathParser {
+
+    private static final Logger logger = LogManager.getLogger(PathParser.class);
+
 
     private static final DateTimeFormatter DATE_FORMAT =
         DateTimeFormatter.ofPattern("d/MMM/yyyy:HH:mm:ss Z");
@@ -38,7 +44,8 @@ public class PathParser {
         Matcher matcher = PATTERN.matcher(log);
 
         if (!matcher.matches()) {
-            throw new IOException("Ошибка парсинга. Строка не соответствует паттерну: " + log);
+            logger.warn("Некорректный формат строки, пропускаем: {}", log);
+            return null;
         }
 
         String ip = matcher.group("id");

@@ -33,14 +33,4 @@ public class PathParserTest {
 
         assertEquals(expected, parsedLog);
     }
-
-    @Test
-    @DisplayName("Должен выбрасывать ошибку, если строка не соответствует паттерну")
-    void parse_ShouldThrowException_WhenLogIsWrong() {
-        String line = "biba";
-
-        IOException ex = assertThrows(IOException.class, () -> pathParser.parseLine(line));
-
-        assertTrue(ex.getMessage().contains("Ошибка парсинга"));
-    }
 }

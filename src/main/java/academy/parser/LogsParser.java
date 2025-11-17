@@ -39,7 +39,9 @@ public class LogsParser {
         List<ParsedLog> parsedLogs = new ArrayList<>();
         for (String line : allLines) {
             ParsedLog parsedLog = pathParser.parseLine(line);
-            parsedLogs.add(parsedLog);
+            if (parsedLog != null) {
+                parsedLogs.add(parsedLog);
+            }
         }
 
         return parsedLogs.stream()
@@ -48,6 +50,10 @@ public class LogsParser {
 
 
     private boolean isWithinDateRange(ParsedLog log, LocalDate dateFrom, LocalDate dateTo) {
+        if (log == null || log.date() == null) {
+            return false;
+        }
+
         LocalDate logDate = log.date().toLocalDate();
         return !((dateFrom != null && logDate.isBefore(dateFrom))
             || (dateTo != null && logDate.isAfter(dateTo)));
