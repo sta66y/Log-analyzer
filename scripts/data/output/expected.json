@@ -1,5 +1,5 @@
 {
-    "files" : ["logs1.txt", "logs2.txt" ],
+    "files" : ["part1.txt", "part2.txt" ],
     "totalRequestsCount" : 256,
     "responseSizeInBytes" : {
         "average" : 206.05,
