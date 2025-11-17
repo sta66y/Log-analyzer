@@ -30,21 +30,25 @@ public class AnalyzeDateDistribution implements AnalyzerModule {
 
     private List<Date> getRequestsPerDate(int totalCount) {
         return frequencyRequestsPerDate.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
             .map(entry -> createDateEntry(entry.getKey(), entry.getValue(), totalCount))
             .collect(Collectors.toList());
     }
 
     private Date createDateEntry(ZonedDateTime date, int count, int totalCount) {
+        String weekday = date.getDayOfWeek().getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.ENGLISH);
+        String capitalizedWeekday = weekday.substring(0, 1).toUpperCase() + weekday.substring(1).toLowerCase();
+
         return new Date(
             date.toLocalDate().toString(),
-            date.getDayOfWeek().toString(),
+            capitalizedWeekday,
             count,
             calculatePercentage(totalCount, count)
         );
     }
 
     private double calculatePercentage(int totalCount, int localCount) {
-        return Math.round((localCount / (double) totalCount) * 100.0) / 100.0;
+        return Math.round((localCount / (double) totalCount) * 10000.0) / 100.0;
     }
 
     private void addLogToCounter(ParsedLog log) {

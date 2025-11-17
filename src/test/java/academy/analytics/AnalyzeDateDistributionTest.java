@@ -30,18 +30,18 @@ public class AnalyzeDateDistributionTest {
             .filter(d -> d.date().equals("2023-10-15"))
             .findFirst()
             .orElseThrow();
-        assertEquals("SUNDAY", date2023.weekday()); // 15 октября 2023 - воскресенье
+        assertEquals("Sunday", date2023.weekday()); // 15 октября 2023 - воскресенье
         assertEquals(4, date2023.totalRequestsCount());
-        assertEquals(0.8, date2023.totalRequestsPercentage()); // 4/5 = 0.8
+        assertEquals(80.0, date2023.totalRequestsPercentage()); // 4/5 = 0.8 * 100
 
         // данные для 2024-10-15
         Date date2024 = requestsPerDate.stream()
             .filter(d -> d.date().equals("2024-10-15"))
             .findFirst()
             .orElseThrow();
-        assertEquals("TUESDAY", date2024.weekday()); // 15 октября 2024 - вторник
+        assertEquals("Tuesday", date2024.weekday()); // 15 октября 2024 - вторник
         assertEquals(1, date2024.totalRequestsCount());
-        assertEquals(0.2, date2024.totalRequestsPercentage()); // 1/5 = 0.2
+        assertEquals(20.0, date2024.totalRequestsPercentage()); // 1/5 = 0.2 * 100
 
         // проверяем общую сумму запросов
         int totalRequests = requestsPerDate.stream()
@@ -49,10 +49,9 @@ public class AnalyzeDateDistributionTest {
             .sum();
         assertEquals(5, totalRequests);
 
-        // проверяем сумму процентов (должна быть близка к 1.0)
         double totalPercentage = requestsPerDate.stream()
             .mapToDouble(Date::totalRequestsPercentage)
             .sum();
-        assertEquals(1.0, totalPercentage, 0.001);
+        assertEquals(100.0, totalPercentage, 0.001);
     }
 }
