@@ -39,7 +39,7 @@ public class PathParser {
      * @return распарсенная запись лога
      * @throws IOException если строка не соответствует ожидаемому формату
      */
-    public ParsedLog parseLine(String log) throws IOException {
+    public ParsedLog parseLine(String log) {
 
         Matcher matcher = PATTERN.matcher(log);
 
