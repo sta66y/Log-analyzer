@@ -2,8 +2,12 @@ package academy.analytics;
 
 import academy.model.AnalysisContext;
 import academy.model.ParsedLog;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * Собирает статистику по уникальным протоколам в логах. <br>
  * Подсчитывает, какие HTTP протоколы используются в запросах.
@@ -18,6 +22,12 @@ public class AnalyzeUniqueProtocols implements AnalyzerModule{
 
     @Override
     public void applyToContext(AnalysisContext context) {
-        context.setUniqueProtocols(new HashSet<>(protocols));
+        context.setUniqueProtocols(sortedProtocols(this.protocols));
+    }
+
+    private LinkedHashSet<String> sortedProtocols(Set<String> protocols) {
+        return protocols.stream()
+            .sorted()
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }
