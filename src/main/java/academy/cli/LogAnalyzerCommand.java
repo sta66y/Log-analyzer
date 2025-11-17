@@ -103,7 +103,7 @@ public class LogAnalyzerCommand implements Callable<Integer> {
             logger.fatal("Ошибка выполнения: {}", e.getMessage());
             return 2;
         } catch (Exception e) {
-            logger.fatal("Непредвиденная ошибка");
+            logger.fatal("Непредвиденная ошибка", e);
             return 1;
         }
     }

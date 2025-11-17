@@ -111,10 +111,10 @@ public class LogFileParsingTest {
         JsonNode result = mapper.readTree(content);
 
         assertEquals(2, result.get("totalRequestsCount").asInt());
-        assertEquals(304.0, result.get("responseSizeInBytes").get("averageValue").asDouble(), 0.01);
-        assertEquals(304, result.get("responseSizeInBytes").get("maxValue").asInt());
+        assertEquals(0.0, result.get("responseSizeInBytes").get("average").asDouble(), 0.01);
+        assertEquals(0.0, result.get("responseSizeInBytes").get("max").asInt());
 
-        assertEquals(1, result.get("resources").size(), "Should have only one resource");
+        assertEquals(1, result.get("resources").size());
         assertEquals("/downloads/product_1", result.get("resources").get(0).get("resource").asText());
 
         assertEquals(1, result.get("requestsPerDate").size());

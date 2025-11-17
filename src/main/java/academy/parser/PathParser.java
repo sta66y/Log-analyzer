@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class PathParser {
 
     private static final DateTimeFormatter DATE_FORMAT =
-        DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z");
+        DateTimeFormatter.ofPattern("d/MMM/yyyy:HH:mm:ss Z");
 
     private static final Pattern PATTERN = Pattern.compile(
         "(?<id>\\S+)\\s" +

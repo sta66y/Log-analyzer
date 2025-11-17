@@ -43,9 +43,9 @@ public class WriterUtil {
      */
     public static String formatResponseSize(ResponseSize responseSize, String type) {
         return switch (type.toLowerCase()) {
-            case "maxvalue" -> Integer.toString(responseSize.maxValue());
+            case "maxvalue" -> Double.toString(responseSize.maxValue());
             case "averagevalue" -> Double.toString(responseSize.averageValue());
-            case "p95value" -> Integer.toString(responseSize.p95Value());
+            case "p95value" -> Double.toString(responseSize.p95Value());
             default -> throw new IllegalArgumentException("Неизвестный тип размера ответа: '" + type + "'. " +
                 "Доступные типы: maxValue, averageValue, p95Value"
             );

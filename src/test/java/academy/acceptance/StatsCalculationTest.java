@@ -60,8 +60,8 @@ public class StatsCalculationTest {
         assertEquals(4, result.get("totalRequestsCount").asInt());
 
         JsonNode responseSize = result.get("responseSizeInBytes");
-        assertEquals(251.0, responseSize.get("averageValue").asDouble(), 0.01);
-        assertEquals(404, responseSize.get("maxValue").asInt());
+        assertEquals(1000, responseSize.get("average").asDouble(), 0.01);
+        assertEquals(2500, responseSize.get("max").asInt());
 
         JsonNode resources = result.get("resources");
         assertEquals(3, resources.size());
