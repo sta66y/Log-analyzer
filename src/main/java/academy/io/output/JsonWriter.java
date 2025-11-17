@@ -17,12 +17,13 @@ public class JsonWriter implements Writer {
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
 
         try {
             String json = mapper.writeValueAsString(context);
             Files.writeString(path, json);
         } catch (IOException e) {
-            throw new IOException("Не удалось записать json в файл: " + e.getMessage());
+            throw new IOException("Не удалось записать json в файл: ", e);
         }
     }
 }
