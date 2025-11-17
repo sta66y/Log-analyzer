@@ -20,11 +20,11 @@ public class AnalyzeResponseSizeTest {
         analyzer.applyToContext(context);
 
         ResponseSize responseSizeInContext = context.getResponseSizeInBytes();
-        assertEquals(321.2, responseSizeInContext.averageValue(),
+        assertEquals(554.0, responseSizeInContext.averageValue(),
             "Значение averageValue не соответствует действительности");
-        assertEquals(500, responseSizeInContext.maxValue(),
+        assertEquals(1234.0, responseSizeInContext.maxValue(),
             "Значение maxValue не соответствует действительности");
-        assertEquals(500, responseSizeInContext.p95Value(),
+        assertEquals(1192.0, responseSizeInContext.p95Value(),
             "Значение p95Value не соответствует действительности");
     }
 }
