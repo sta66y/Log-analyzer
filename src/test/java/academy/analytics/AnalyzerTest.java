@@ -77,7 +77,7 @@ public class AnalyzerTest {
             verify(module).applyToContext(any(AnalysisContext.class));
         }
 
-        assertEquals(List.of("/path/to/file1.log", "/path/to/file2.log"), result.getFiles());
+        assertEquals(List.of("file1.log", "file2.log"), result.getFiles());
         assertNull(result.getDateFrom());
         assertNull(result.getDateTo());
     }
@@ -109,7 +109,7 @@ public class AnalyzerTest {
     @Test
     @DisplayName("Фильтрация: логи ПОСЛЕ dateTo должны отфильтровываться")
     void analyse_ShouldFilterLogsAfterDateTo() throws IOException {
-        when(reader1.getPath()).thenReturn("/path/to/file.log");
+        when(reader1.getPath()).thenReturn("file.log");
         List<Reader> readers = List.of(reader1);
 
         ParsedLog logBefore = new ParsedLog("10.0.0.1", "user1", "user1",
@@ -133,7 +133,7 @@ public class AnalyzerTest {
     @Test
     @DisplayName("Фильтрация: логи в диапазоне dateFrom-dateTo должны обрабатываться")
     void analyse_ShouldAnalyzeLogsWithinRange() throws IOException {
-        when(reader1.getPath()).thenReturn("/path/to/file.log");
+        when(reader1.getPath()).thenReturn("file.log");
         List<Reader> readers = List.of(reader1);
 
         ParsedLog log2 = new ParsedLog("10.0.0.2", "user2", "user2",
@@ -158,7 +158,7 @@ public class AnalyzerTest {
     @Test
     @DisplayName("Без ограничений дат должны обрабатываться все логи")
     void analyse_ShouldProcessAllLogsWhenNoDateRange() throws IOException {
-        when(reader1.getPath()).thenReturn("/path/to/file.log");
+        when(reader1.getPath()).thenReturn("file.log");
         List<Reader> readers = List.of(reader1);
 
         ParsedLog log1 = new ParsedLog("10.0.0.1", "user1", "user1",
@@ -183,7 +183,7 @@ public class AnalyzerTest {
     @Test
     @DisplayName("Пустой stream не должен вызывать исключений")
     void analyse_ShouldHandleEmptyStream() throws IOException {
-        when(reader1.getPath()).thenReturn("/path/to/file.log");
+        when(reader1.getPath()).thenReturn("file.log");
         List<Reader> readers = List.of(reader1);
 
         Stream<ParsedLog> emptyStream = Stream.empty();
@@ -199,13 +199,13 @@ public class AnalyzerTest {
         }
 
         assertNotNull(result);
-        assertEquals(List.of("/path/to/file.log"), result.getFiles());
+        assertEquals(List.of("file.log"), result.getFiles());
     }
 
     @Test
     @DisplayName("Граничные значения должны включаться")
     void analyse_ShouldIncludeBoundaryDates() throws IOException {
-        when(reader1.getPath()).thenReturn("/path/to/file.log");
+        when(reader1.getPath()).thenReturn("file.log");
         List<Reader> readers = List.of(reader1);
 
         ParsedLog boundaryLog = new ParsedLog("10.0.0.1", "user1", "user1",

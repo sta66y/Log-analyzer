@@ -7,8 +7,10 @@ import academy.model.ParsedLog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -115,7 +117,19 @@ public class Analyzer {
      */
     private AnalysisContext createContext(List<Reader> readers, LocalDate dateFrom, LocalDate dateTo) {
         AnalysisContext context = new AnalysisContext();
-        context.setFiles(readers.stream().map(Reader::getPath).toList());
+        List<String> fileNames = readers.stream()
+            .map(reader -> {
+                String path = reader.getPath();
+                if (path.startsWith("http")) {
+                    return path;
+                } else {
+                    return Path.of(path).getFileName().toString();
+                }
+            })
+            .sorted()
+            .collect(Collectors.toList());
+
+        context.setFiles(fileNames);
         context.setDateFrom(dateFrom);
         context.setDateTo(dateTo);
 
