@@ -11,7 +11,6 @@ import academy.util.WriterFactory;
 import academy.model.AnalysisContext;
 import academy.parser.LogsParser;
 import academy.parser.PathParser;
-import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Command;
 import java.io.IOException;
@@ -99,7 +98,7 @@ public class LogAnalyzerCommand implements Callable<Integer> {
 
             logger.info("Анализ завершен. Результат сохранен в: {}", output);
             return 0;
-        } catch (IOException | IllegalArgumentException e) {
+        } catch (IOException | RuntimeException e) {
             logger.fatal("Ошибка выполнения: {}", e.getMessage());
             return 2;
         } catch (Exception e) {

@@ -23,7 +23,6 @@ import picocli.CommandLine;
 
 public class ArgumentValidationTest {
 
-    private LogAnalyzerCommand logAnalyzerCommand;
     private CommandLine cmd;
 
     @TempDir
@@ -31,8 +30,7 @@ public class ArgumentValidationTest {
 
     @BeforeEach
     void setup() {
-        logAnalyzerCommand = new LogAnalyzerCommand();
-        cmd = new CommandLine(logAnalyzerCommand);
+        cmd = new CommandLine(new LogAnalyzerCommand());
     }
 
     @Test

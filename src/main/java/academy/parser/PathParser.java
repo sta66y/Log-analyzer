@@ -1,10 +1,8 @@
 package academy.parser;
 
-import academy.analytics.Analyzer;
 import academy.model.ParsedLog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
@@ -37,7 +35,6 @@ public class PathParser {
      *
      * @param log строка лога в формате NGINX
      * @return распарсенная запись лога
-     * @throws IOException если строка не соответствует ожидаемому формату
      */
     public ParsedLog parseLine(String log) {
 

@@ -22,7 +22,6 @@ import java.util.List;
 
 public class LogFileParsingTest {
 
-    private LogAnalyzerCommand logAnalyzerCommand;
     private CommandLine cmd;
 
     @TempDir
@@ -30,8 +29,7 @@ public class LogFileParsingTest {
 
     @BeforeEach
     void setup() {
-        logAnalyzerCommand = new LogAnalyzerCommand();
-        cmd = new CommandLine(logAnalyzerCommand);
+        cmd = new CommandLine(new LogAnalyzerCommand());
     }
 
     @Test

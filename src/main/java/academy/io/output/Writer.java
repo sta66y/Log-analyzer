@@ -6,5 +6,5 @@ import java.nio.file.Path;
 
 /** Записывает результаты анализа в файл. */
 public interface Writer {
-    public void write(Path path, AnalysisContext context) throws IOException;
+    void write(Path path, AnalysisContext context) throws IOException;
 }

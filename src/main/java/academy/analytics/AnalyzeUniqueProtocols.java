@@ -2,7 +2,6 @@ package academy.analytics;
 
 import academy.model.AnalysisContext;
 import academy.model.ParsedLog;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;

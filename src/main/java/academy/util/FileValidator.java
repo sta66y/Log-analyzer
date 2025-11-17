@@ -20,7 +20,7 @@ public class FileValidator {
         String fileName = filePath.getFileName().toString().toLowerCase();
 
         if (!Files.exists(filePath)) throw new IOException("Файла не существует");
-        if (!Files.isRegularFile(filePath)) throw new IOException("не  является файлом");
+        if (!Files.isRegularFile(filePath)) throw new IOException("не является файлом");
 
         return hasValidInputExtension(fileName);
     }
