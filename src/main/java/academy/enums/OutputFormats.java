@@ -19,7 +19,7 @@ public enum OutputFormats {
      * @throws IllegalArgumentException если идентификатор не поддерживается
      */
     public static OutputFormats fromId(String id) throws IllegalAccessException {
-        for (OutputFormats format : OutputFormats.values()) {
+        for (OutputFormats format : values()) {
             if (format.id.equals(id)) return format;
         }
         throw new IllegalAccessException("Некорректный формат");

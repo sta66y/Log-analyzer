@@ -31,7 +31,7 @@ public class AnalyzeResponseSize implements AnalyzerModule {
     }
 
     private double calculateAverage(int totalRequests) {
-        return Math.round((sumResponses / (double) totalRequests) * 100.0) / 100.0;
+        return Math.round(sumResponses / (double) totalRequests * 100.0) / 100.0;
     }
 
     private double calculateP95(int totalRequests) {

@@ -7,13 +7,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** Парсит и фильтрует логи по дате. */
 public class LogsParser {
-
-    private static final Logger logger = LogManager.getLogger(LogsParser.class);
 
     private final PathParser pathParser;
 

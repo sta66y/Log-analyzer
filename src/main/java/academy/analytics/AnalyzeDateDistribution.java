@@ -45,7 +45,7 @@ public class AnalyzeDateDistribution implements AnalyzerModule {
     }
 
     private double calculatePercentage(int totalCount, int localCount) {
-        return Math.round((localCount / (double) totalCount) * 10000.0) / 100.0;
+        return Math.round(localCount / (double) totalCount * 10000.0) / 100.0;
     }
 
     private void addLogToCounter(ParsedLog log) {
