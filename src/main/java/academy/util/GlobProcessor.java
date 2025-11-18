@@ -7,7 +7,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -67,8 +66,8 @@ public class GlobProcessor {
     }
 
     private static Path extractRoot(String path) {
-        Path pathObj = Paths.get(path);
-        Path root = pathObj.isAbsolute() ? pathObj.getRoot() : Paths.get("");
+        Path pathObj = Path.of(path);
+        Path root = pathObj.isAbsolute() ? pathObj.getRoot() : Path.of("");
 
         for (Path part : pathObj) {
             if (containsGlobCharacters(part.toString())) {
