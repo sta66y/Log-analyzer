@@ -66,8 +66,16 @@ public class GlobProcessor {
     }
 
     private static Path extractRoot(String path) {
+        if (path == null) {
+            return Path.of("");
+        }
+
         Path pathObj = Path.of(path);
         Path root = pathObj.isAbsolute() ? pathObj.getRoot() : Path.of("");
+
+        if (root == null) {
+            root = Path.of("");
+        }
 
         for (Path part : pathObj) {
             if (containsGlobCharacters(part.toString())) {

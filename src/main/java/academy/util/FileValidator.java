@@ -16,8 +16,18 @@ public class FileValidator {
      * @return true если файл существует, является обычным файлом и имеет расширение .log или .txt
      */
     public static boolean isValidLogFile(String path) throws IOException {
+        if (path == null || path.trim().isEmpty()) {
+            throw new IOException("Путь не может быть пустым или null");
+        }
+
         Path filePath = Path.of(path);
-        String fileName = filePath.getFileName().toString().toLowerCase();
+        Path fileNamePath = filePath.getFileName();
+
+        if (fileNamePath == null) {
+            throw new IOException("Некорректный путь: " + path);
+        }
+
+        String fileName = fileNamePath.toString().toLowerCase();
 
         if (!Files.exists(filePath)) throw new IOException("Файла не существует");
         if (!Files.isRegularFile(filePath)) throw new IOException("не является файлом");
@@ -26,13 +36,18 @@ public class FileValidator {
     }
 
     public static void isValidOutputPath(Path filePath, OutputFormats format) throws IOException {
-        String fileName = filePath.getFileName().toString().toLowerCase();
+        if (filePath == null || format == null) {
+            throw new IOException("Путь или формат не могут быть null");
+        }
 
-        if (Files.exists(filePath)) throw new IOException("Файл по пути " + filePath + " уже существует");
-        if (!hasValidOutputExtension(fileName, format))
-            throw new IOException("Указан неправильный формат для output. Ожидался " + format);
+        Path fileNamePath = filePath.getFileName();
+        if (fileNamePath == null) {
+            throw new IOException("Некорректный путь: " + filePath);
+        }
 
-        hasValidInputExtension(fileName);
+        if (!hasValidOutputExtension(fileNamePath.toString(), format)) {
+            throw new IOException("Несоответствие форматов");
+        }
     }
 
     /**

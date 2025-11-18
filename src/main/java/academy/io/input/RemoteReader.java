@@ -45,8 +45,9 @@ public class RemoteReader implements Reader {
                 throw new IOException("Ошибка соединения с сервером: " + response.statusCode());
             }
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(response.body()));
-            return reader.lines();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.body()))) {
+                return reader.lines().toList().stream();
+            }
 
         } catch (InterruptedException e) {
             throw new InterruptedException("Прерывание при HTTP-запросе");

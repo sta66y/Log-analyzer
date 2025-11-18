@@ -83,7 +83,7 @@ public class ArgumentValidationTest {
 
     @ParameterizedTest
     @MethodSource("test6ArgumentsSource")
-    @DisplayName("По пути в аргументе --output указан файл с некоректным расширением")
+    @DisplayName("По пути в аргументе --output указан файл с некорректным расширением")
     void test6(String format, String output) throws IOException {
         Path logFile = tempDir.resolve("access.log");
         Files.createFile(logFile);
