@@ -1,11 +1,12 @@
 package academy.analytics;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import academy.model.AnalysisContext;
 import academy.model.ParsedLog;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AnalyzeTotalCountRequestsTest {
     private AnalyzerModule analyzer;
@@ -24,8 +25,11 @@ public class AnalyzeTotalCountRequestsTest {
 
         analyzer.applyToContext(context);
 
-        assertEquals(0, context.getTotalRequestsCount(),
-            "Значение TotalRequestsCount в context не поменялось"); // при инициализации cntRequests в RequestStats = 0
+        assertEquals(
+                0,
+                context.getTotalRequestsCount(),
+                "Значение TotalRequestsCount в context не поменялось"); // при инициализации cntRequests в RequestStats
+        // = 0
     }
 
     @Test
@@ -37,8 +41,6 @@ public class AnalyzeTotalCountRequestsTest {
         analyzer.accept(log);
         analyzer.applyToContext(context);
 
-        assertEquals(1, context.getTotalRequestsCount(),
-            "Значение TotalRequestsCount в context не поменялось");
+        assertEquals(1, context.getTotalRequestsCount(), "Значение TotalRequestsCount в context не поменялось");
     }
-
 }

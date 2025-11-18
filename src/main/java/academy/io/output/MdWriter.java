@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
-/** Записывает данные из контекста в файл в формате markdown*/
+/** Записывает данные из контекста в файл в формате markdown */
 public class MdWriter implements Writer {
     @Override
     public void write(Path path, AnalysisContext context) throws IOException {
@@ -32,7 +32,9 @@ public class MdWriter implements Writer {
         String totalRequestsDisplay = WriterUtil.formatTotalRequestsDisplay(context.getTotalRequestsCount());
         md.append("| Количество запросов | ").append(totalRequestsDisplay).append(" |\n");
         String maxSizeResponseDisplay = WriterUtil.formatResponseSize(context.getResponseSizeInBytes(), "maxValue");
-        md.append("| Максимальный ответ ответа | ").append(maxSizeResponseDisplay).append(" |\n");
+        md.append("| Максимальный ответ ответа | ")
+                .append(maxSizeResponseDisplay)
+                .append(" |\n");
         String averageResponseDisplay = WriterUtil.formatResponseSize(context.getResponseSizeInBytes(), "averageValue");
         md.append("| Средний размер ответа | ").append(averageResponseDisplay).append(" |\n");
         String p95ResponseDisplay = WriterUtil.formatResponseSize(context.getResponseSizeInBytes(), "p95Value");
@@ -82,9 +84,10 @@ public class MdWriter implements Writer {
             md.append("| ").append(protocol).append(" |\n");
         }
 
-        if (context.getDateFrom() != null) md.append("\nНачальная дата: ").append(context.getDateFrom().toString());
-        if (context.getDateTo() != null) md.append("\nКонечная дата: ").append(context.getDateTo().toString());
-
+        if (context.getDateFrom() != null)
+            md.append("\nНачальная дата: ").append(context.getDateFrom().toString());
+        if (context.getDateTo() != null)
+            md.append("\nКонечная дата: ").append(context.getDateTo().toString());
 
         try {
             Files.writeString(path, md.toString());

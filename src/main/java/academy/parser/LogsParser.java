@@ -2,13 +2,13 @@ package academy.parser;
 
 import academy.io.input.Reader;
 import academy.model.ParsedLog;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** Парсит и фильтрует логи по дате. */
 public class LogsParser {
@@ -32,16 +32,16 @@ public class LogsParser {
      */
     public Stream<ParsedLog> parseAndFilterLogs(List<Reader> readers, LocalDate dateFrom, LocalDate dateTo) {
         return readers.stream()
-            .flatMap(reader -> {
-                try {
-                    return reader.read();
-                } catch (IOException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            })
-            .filter(Objects::nonNull)
-            .map(pathParser::parseLine)
-            .filter(parsedLog -> isWithinDateRange(parsedLog, dateFrom, dateTo));
+                .flatMap(reader -> {
+                    try {
+                        return reader.read();
+                    } catch (IOException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .filter(Objects::nonNull)
+                .map(pathParser::parseLine)
+                .filter(parsedLog -> isWithinDateRange(parsedLog, dateFrom, dateTo));
     }
 
     private boolean isWithinDateRange(ParsedLog log, LocalDate dateFrom, LocalDate dateTo) {
@@ -50,7 +50,6 @@ public class LogsParser {
         }
 
         LocalDate logDate = log.date().toLocalDate();
-        return !((dateFrom != null && logDate.isBefore(dateFrom))
-            || (dateTo != null && logDate.isAfter(dateTo)));
+        return !((dateFrom != null && logDate.isBefore(dateFrom)) || (dateTo != null && logDate.isAfter(dateTo)));
     }
 }

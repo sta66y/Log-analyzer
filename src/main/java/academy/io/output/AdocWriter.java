@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
-/** Записывает данные из контекста в файл в формате adoc*/
+/** Записывает данные из контекста в файл в формате adoc */
 public class AdocWriter implements Writer {
 
     @Override
@@ -28,16 +28,30 @@ public class AdocWriter implements Writer {
         adoc.append("|===\n");
         adoc.append("| Метрика | Значение\n");
 
-        adoc.append("| Файл(-ы) | ").append(WriterUtil.formatDisplayFiles(context.getFiles())).append("\n");
-        adoc.append("| Начальная дата | ").append(WriterUtil.formatDisplayDate(context.getDateFrom())).append("\n");
-        adoc.append("| Конечная дата | ").append(WriterUtil.formatDisplayDate(context.getDateTo())).append("\n");
-        adoc.append("| Количество запросов | ").append(WriterUtil.formatTotalRequestsDisplay(context.getTotalRequestsCount())).append("\n");
+        adoc.append("| Файл(-ы) | ")
+                .append(WriterUtil.formatDisplayFiles(context.getFiles()))
+                .append("\n");
+        adoc.append("| Начальная дата | ")
+                .append(WriterUtil.formatDisplayDate(context.getDateFrom()))
+                .append("\n");
+        adoc.append("| Конечная дата | ")
+                .append(WriterUtil.formatDisplayDate(context.getDateTo()))
+                .append("\n");
+        adoc.append("| Количество запросов | ")
+                .append(WriterUtil.formatTotalRequestsDisplay(context.getTotalRequestsCount()))
+                .append("\n");
 
         ResponseSize size = context.getResponseSizeInBytes();
         if (size != null) {
-            adoc.append("| Максимальный размер ответа | ").append(WriterUtil.formatResponseSize(size, "maxValue")).append("\n");
-            adoc.append("| Средний размер ответа | ").append(WriterUtil.formatResponseSize(size, "averageValue")).append("\n");
-            adoc.append("| 95p размера ответа | ").append(WriterUtil.formatResponseSize(size, "p95Value")).append("\n");
+            adoc.append("| Максимальный размер ответа | ")
+                    .append(WriterUtil.formatResponseSize(size, "maxValue"))
+                    .append("\n");
+            adoc.append("| Средний размер ответа | ")
+                    .append(WriterUtil.formatResponseSize(size, "averageValue"))
+                    .append("\n");
+            adoc.append("| 95p размера ответа | ")
+                    .append(WriterUtil.formatResponseSize(size, "p95Value"))
+                    .append("\n");
         }
 
         adoc.append("|===\n\n");
@@ -49,8 +63,11 @@ public class AdocWriter implements Writer {
 
         List<Resource> resources = context.getResources();
         for (Resource resource : resources) {
-            adoc.append("| `").append(resource.resource()).append("` | ")
-                .append(WriterUtil.formatTotalRequestsDisplay(resource.totalRequestsCount())).append("\n");
+            adoc.append("| `")
+                    .append(resource.resource())
+                    .append("` | ")
+                    .append(WriterUtil.formatTotalRequestsDisplay(resource.totalRequestsCount()))
+                    .append("\n");
         }
         adoc.append("|===\n\n");
 
@@ -61,9 +78,13 @@ public class AdocWriter implements Writer {
 
         List<ResponseCode> responseCodes = context.getResponseCodes();
         for (ResponseCode responseCode : responseCodes) {
-            adoc.append("| ").append(WriterUtil.formatTotalRequestsDisplay(responseCode.code())).append(" | ")
-                .append(WriterUtil.getHttpCodeName(responseCode.code())).append(" | ")
-                .append(WriterUtil.formatTotalRequestsDisplay(responseCode.totalResponsesCount())).append("\n");
+            adoc.append("| ")
+                    .append(WriterUtil.formatTotalRequestsDisplay(responseCode.code()))
+                    .append(" | ")
+                    .append(WriterUtil.getHttpCodeName(responseCode.code()))
+                    .append(" | ")
+                    .append(WriterUtil.formatTotalRequestsDisplay(responseCode.totalResponsesCount()))
+                    .append("\n");
         }
         adoc.append("|===\n\n");
 
@@ -75,10 +96,15 @@ public class AdocWriter implements Writer {
 
             List<Date> dates = context.getRequestsPerDate();
             for (Date date : dates) {
-                adoc.append("| ").append(date.date()).append(" | ")
-                    .append(date.weekday()).append(" | ")
-                    .append(WriterUtil.formatTotalRequestsDisplay(date.totalRequestsCount())).append(" | ")
-                    .append(date.totalRequestsPercentage()).append("% |\n");
+                adoc.append("| ")
+                        .append(date.date())
+                        .append(" | ")
+                        .append(date.weekday())
+                        .append(" | ")
+                        .append(WriterUtil.formatTotalRequestsDisplay(date.totalRequestsCount()))
+                        .append(" | ")
+                        .append(date.totalRequestsPercentage())
+                        .append("% |\n");
             }
             adoc.append("|===\n\n");
         }
@@ -94,8 +120,10 @@ public class AdocWriter implements Writer {
         }
         adoc.append("|===\n");
 
-        if (context.getDateFrom() != null) adoc.append("\nНачальная дата: ").append(context.getDateFrom().toString());
-        if (context.getDateTo() != null) adoc.append("\nКонечная дата: ").append(context.getDateTo().toString());
+        if (context.getDateFrom() != null)
+            adoc.append("\nНачальная дата: ").append(context.getDateFrom().toString());
+        if (context.getDateTo() != null)
+            adoc.append("\nКонечная дата: ").append(context.getDateTo().toString());
 
         try {
             Files.writeString(path, adoc.toString());
@@ -103,5 +131,4 @@ public class AdocWriter implements Writer {
             throw new IOException("Не удалось записать AsciiDoc в файл", e);
         }
     }
-
 }

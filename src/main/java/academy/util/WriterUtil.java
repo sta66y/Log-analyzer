@@ -46,9 +46,9 @@ public class WriterUtil {
             case "maxvalue" -> Double.toString(responseSize.maxValue());
             case "averagevalue" -> Double.toString(responseSize.averageValue());
             case "p95value" -> Double.toString(responseSize.p95Value());
-            default -> throw new IllegalArgumentException("Неизвестный тип размера ответа: '" + type + "'. " +
-                "Доступные типы: maxValue, averageValue, p95Value"
-            );
+            default ->
+                throw new IllegalArgumentException("Неизвестный тип размера ответа: '" + type + "'. "
+                        + "Доступные типы: maxValue, averageValue, p95Value");
         };
     }
 

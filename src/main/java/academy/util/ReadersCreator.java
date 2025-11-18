@@ -1,16 +1,15 @@
 package academy.util;
 
 import academy.io.input.Reader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * Создает readers для различных типов путей.
- * Обрабатывает локальные файлы, URL и glob паттерны.
- * Собирает все ошибки обработки и выбрасывает их одним исключением.
+ * Создает readers для различных типов путей. Обрабатывает локальные файлы, URL и glob паттерны. Собирает все ошибки
+ * обработки и выбрасывает их одним исключением.
  */
 public class ReadersCreator {
     private static final Logger logger = LogManager.getLogger(ReadersCreator.class);

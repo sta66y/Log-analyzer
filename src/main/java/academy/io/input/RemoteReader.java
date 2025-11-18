@@ -1,7 +1,5 @@
 package academy.io.input;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +9,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** Читает логи из удаленного источника по HTTP/HTTPS. */
 public class RemoteReader implements Reader {
@@ -33,15 +33,10 @@ public class RemoteReader implements Reader {
     public Stream<String> read() throws InterruptedException, IOException {
         try {
             logger.info("Попытка подключения к {}", path);
-            HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(path))
-                .GET()
-                .build();
+            HttpRequest request =
+                    HttpRequest.newBuilder().uri(URI.create(path)).GET().build();
 
-            HttpResponse<InputStream> response = client.send(
-                request,
-                HttpResponse.BodyHandlers.ofInputStream()
-            );
+            HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
 
             logger.info("HTTP статус: {} для URL: {}", response.statusCode(), path);
 

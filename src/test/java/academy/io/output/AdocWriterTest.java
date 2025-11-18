@@ -1,17 +1,16 @@
 package academy.io.output;
 
-import academy.model.*;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import static academy.io.output.AnalysisContextFactory.createEmptyContext;
 import static academy.io.output.AnalysisContextFactory.createTestContext;
 import static org.junit.jupiter.api.Assertions.*;
+
+import academy.model.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class AdocWriterTest {
     private final Writer writer = new AdocWriter();
@@ -186,8 +185,7 @@ class AdocWriterTest {
 
         AnalysisContext context = createTestContext();
 
-        IOException exception = assertThrows(IOException.class,
-            () -> writer.write(invalidPath, context));
+        IOException exception = assertThrows(IOException.class, () -> writer.write(invalidPath, context));
 
         assertTrue(exception.getMessage().contains("Не удалось записать AsciiDoc в файл"));
     }

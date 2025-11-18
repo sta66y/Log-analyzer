@@ -6,7 +6,7 @@ import academy.model.ResponseSize;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Cчитает средний, максимальный и 95-й перцентиль размера ответа.*/
+/** Cчитает средний, максимальный и 95-й перцентиль размера ответа. */
 public class AnalyzeResponseSize implements AnalyzerModule {
     private final List<Integer> responseSizes = new ArrayList<>();
     private int sumResponses = 0;
@@ -25,10 +25,9 @@ public class AnalyzeResponseSize implements AnalyzerModule {
         if (totalRequestCount == 0) return; // обработка случая, когда нет логов
 
         context.setResponseSizeInBytes(new ResponseSize(
-            calculateAverage(context.getTotalRequestsCount()),
-            maxResponse,
-            calculateP95(context.getTotalRequestsCount())
-        ));
+                calculateAverage(context.getTotalRequestsCount()),
+                maxResponse,
+                calculateP95(context.getTotalRequestsCount())));
     }
 
     private double calculateAverage(int totalRequests) {

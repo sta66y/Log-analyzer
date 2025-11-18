@@ -1,17 +1,18 @@
 package academy.io.input;
 
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.net.http.HttpClient;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class RemoteReaderTest {
     private final HttpClient client = HttpClient.newHttpClient();
@@ -22,9 +23,7 @@ public class RemoteReaderTest {
         try (MockWebServer server = new MockWebServer()) {
             server.start();
 
-            server.enqueue(new MockResponse()
-                .setResponseCode(200)
-                .setBody("line1\nline2\nline3"));
+            server.enqueue(new MockResponse().setResponseCode(200).setBody("line1\nline2\nline3"));
 
             String url = server.url("/test.log").toString();
             Reader reader = new RemoteReader(client, url);

@@ -1,6 +1,6 @@
 package academy.enums;
 
-/**  Поддерживаемые форматы вывода результатов анализа. */
+/** Поддерживаемые форматы вывода результатов анализа. */
 public enum OutputFormats {
     JSON("json"),
     MD("markdown"),
@@ -19,7 +19,7 @@ public enum OutputFormats {
      * @throws IllegalArgumentException если идентификатор не поддерживается
      */
     public static OutputFormats fromId(String id) throws IllegalAccessException {
-        for(OutputFormats format : OutputFormats.values()) {
+        for (OutputFormats format : OutputFormats.values()) {
             if (format.id.equals(id)) return format;
         }
         throw new IllegalAccessException("Некорректный формат");

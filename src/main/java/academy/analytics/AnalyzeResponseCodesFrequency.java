@@ -8,11 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Собирает статистику по HTTP кодам ответов.
- * Подсчитывает частоту каждого кода состояния в логах.
- */
-public class AnalyzeResponseCodesFrequency implements AnalyzerModule{
+/** Собирает статистику по HTTP кодам ответов. Подсчитывает частоту каждого кода состояния в логах. */
+public class AnalyzeResponseCodesFrequency implements AnalyzerModule {
     private final Map<Integer, Integer> frequencyResponseCodes = new HashMap<>();
 
     @Override
@@ -28,9 +25,7 @@ public class AnalyzeResponseCodesFrequency implements AnalyzerModule{
     /** Преобразует собранную статистику в список кодов ответов. */
     private List<ResponseCode> getResponseCodes() {
         List<ResponseCode> responseCodes = new ArrayList<>();
-        frequencyResponseCodes.forEach((code, count) ->
-            responseCodes.add(new ResponseCode(code, count))
-        );
+        frequencyResponseCodes.forEach((code, count) -> responseCodes.add(new ResponseCode(code, count)));
         return responseCodes;
     }
 

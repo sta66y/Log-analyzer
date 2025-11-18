@@ -2,8 +2,6 @@ package academy.util;
 
 import academy.io.input.LocalReader;
 import academy.io.input.Reader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -13,10 +11,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-/**
- * Обрабатывает glob паттерны для поиска файлов.
- */
+/** Обрабатывает glob паттерны для поиска файлов. */
 public class GlobProcessor {
     private static final Logger logger = LogManager.getLogger(GlobProcessor.class);
 
@@ -36,10 +34,8 @@ public class GlobProcessor {
 
         List<Path> matchingFiles;
         try (Stream<Path> stream = Files.walk(root)) {
-            matchingFiles = stream
-                .filter(Files::isRegularFile)
-                .filter(matcher::matches)
-                .toList();
+            matchingFiles =
+                    stream.filter(Files::isRegularFile).filter(matcher::matches).toList();
         }
 
         for (Path file : matchingFiles) {
@@ -50,6 +46,7 @@ public class GlobProcessor {
 
         return readers;
     }
+
     private static PathMatcher createPathMatcher(String pattern) {
         return FileSystems.getDefault().getPathMatcher("glob:" + pattern);
     }

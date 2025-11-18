@@ -1,13 +1,14 @@
 package academy.analytics;
 
-import academy.model.AnalysisContext;
-import academy.model.ResponseCode;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import java.util.List;
 import static academy.analytics.TestConstants.EXAMPLES_LOG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import academy.model.AnalysisContext;
+import academy.model.ResponseCode;
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class AnalyzeResponseCodesFrequencyTest {
     private final AnalyzerModule analyzer = new AnalyzeResponseCodesFrequency();
@@ -28,7 +29,9 @@ public class AnalyzeResponseCodesFrequencyTest {
         assertTrue(responseCodes.stream().anyMatch(rc -> rc.code() == 302 && rc.totalResponsesCount() == 1));
         assertTrue(responseCodes.stream().anyMatch(rc -> rc.code() == 500 && rc.totalResponsesCount() == 1));
 
-        int totalCount = responseCodes.stream().mapToInt(ResponseCode::totalResponsesCount).sum();
+        int totalCount = responseCodes.stream()
+                .mapToInt(ResponseCode::totalResponsesCount)
+                .sum();
         assertEquals(5, totalCount);
     }
 }

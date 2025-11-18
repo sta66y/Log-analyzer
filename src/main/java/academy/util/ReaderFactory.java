@@ -3,9 +3,9 @@ package academy.util;
 import academy.io.input.LocalReader;
 import academy.io.input.Reader;
 import academy.io.input.RemoteReader;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.io.IOException;
 
 /** Фабрика для создания readers в зависимости от типа пути. */
 public class ReaderFactory {

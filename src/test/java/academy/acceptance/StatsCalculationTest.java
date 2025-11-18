@@ -2,20 +2,19 @@ package academy.acceptance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import academy.cli.LogAnalyzerCommand;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import picocli.CommandLine;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
 
 public class StatsCalculationTest {
 
@@ -35,20 +34,20 @@ public class StatsCalculationTest {
     @DisplayName("Расчет статистики на основании локального log-файла")
     void happyPathTest() throws IOException {
         Path logFile = tempDir.resolve("access.log");
-        Files.write(logFile, List.of(
-            "93.180.71.3 - - [17/May/2015:08:05:32 +0000] \"GET /product1 HTTP/1.1\" 200 1000 \"-\" \"Debian\"",
-            "80.91.33.133 - - [17/May/2015:08:05:34 +0000] \"GET /product1 HTTP/1.1\" 200 500 \"-\" \"Debian\"",
-            "217.168.17.5 - - [17/May/2015:12:25:42 +0000] \"GET /product2 HTTP/1.1\" 404 0 \"-\" \"Debian\"",
-            "46.105.14.53 - - [18/May/2015:14:30:15 +0000] \"GET /image.png HTTP/1.1\" 200 2500 \"-\" \"Mozilla\""
-        ));
+        Files.write(
+                logFile,
+                List.of(
+                        "93.180.71.3 - - [17/May/2015:08:05:32 +0000] \"GET /product1 HTTP/1.1\" 200 1000 \"-\" \"Debian\"",
+                        "80.91.33.133 - - [17/May/2015:08:05:34 +0000] \"GET /product1 HTTP/1.1\" 200 500 \"-\" \"Debian\"",
+                        "217.168.17.5 - - [17/May/2015:12:25:42 +0000] \"GET /product2 HTTP/1.1\" 404 0 \"-\" \"Debian\"",
+                        "46.105.14.53 - - [18/May/2015:14:30:15 +0000] \"GET /image.png HTTP/1.1\" 200 2500 \"-\" \"Mozilla\""));
 
         Path outputFile = tempDir.resolve("stats.json");
 
         int exitCode = cmd.execute(
-            "-p", logFile.toString(),
-            "-f", "json",
-            "-o", outputFile.toString()
-        );
+                "-p", logFile.toString(),
+                "-f", "json",
+                "-o", outputFile.toString());
 
         assertEquals(0, exitCode);
         assertTrue(Files.exists(outputFile));

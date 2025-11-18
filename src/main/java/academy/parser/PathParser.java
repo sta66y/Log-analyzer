@@ -1,34 +1,30 @@
 package academy.parser;
 
 import academy.model.ParsedLog;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** Парсит строки логов NGINX в структурированный формат.` */
 public class PathParser {
 
     private static final Logger logger = LogManager.getLogger(PathParser.class);
 
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("d/MMM/yyyy:HH:mm:ss Z");
 
-    private static final DateTimeFormatter DATE_FORMAT =
-        DateTimeFormatter.ofPattern("d/MMM/yyyy:HH:mm:ss Z");
-
-    private static final Pattern PATTERN = Pattern.compile(
-        "(?<id>\\S+)\\s" +
-            "(?<clientId>\\S+)\\s" +
-            "(?<userRFCId>\\S+)\\s" +
-            "\\[(?<date>[^\\]]+)\\]\\s" +
-            "\"(?<method>\\S+)\\s" +
-            "(?<resource>\\S+)\\s" +
-            "(?<version>\\S+)\"\\s" +
-            "(?<httpResponse>\\S+)\\s" +
-            "(?<size>\\S+)\\s" +
-            "\"(?<referrer>[^\"]+)\"\\s" +
-            "\"(?<userAgent>[^\"]+)\"");
+    private static final Pattern PATTERN = Pattern.compile("(?<id>\\S+)\\s" + "(?<clientId>\\S+)\\s"
+            + "(?<userRFCId>\\S+)\\s"
+            + "\\[(?<date>[^\\]]+)\\]\\s"
+            + "\"(?<method>\\S+)\\s"
+            + "(?<resource>\\S+)\\s"
+            + "(?<version>\\S+)\"\\s"
+            + "(?<httpResponse>\\S+)\\s"
+            + "(?<size>\\S+)\\s"
+            + "\"(?<referrer>[^\"]+)\"\\s"
+            + "\"(?<userAgent>[^\"]+)\"");
 
     /**
      * Парсит строку лога в структурированный объект.
@@ -61,7 +57,7 @@ public class PathParser {
         String referrer = matcher.group("referrer");
         String userAgent = matcher.group("userAgent");
 
-        return new ParsedLog(ip, clientId, userRFCId, date, method,
-            resource, version, httpResponse, size, referrer, userAgent);
+        return new ParsedLog(
+                ip, clientId, userRFCId, date, method, resource, version, httpResponse, size, referrer, userAgent);
     }
 }

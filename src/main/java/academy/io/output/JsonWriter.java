@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-/** Записывает данные из контекста в файл в формате json*/
+/** Записывает данные из контекста в файл в формате json */
 public class JsonWriter implements Writer {
     @Override
     public void write(Path path, AnalysisContext context) throws IOException {

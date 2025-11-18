@@ -1,11 +1,12 @@
 package academy.analytics;
 
-import academy.model.AnalysisContext;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import java.util.Set;
 import static academy.analytics.TestConstants.EXAMPLES_LOG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import academy.model.AnalysisContext;
+import java.util.Set;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class AnalyzeUniqueProtocolsTest {
     private final AnalyzerModule analyzer = new AnalyzeUniqueProtocols();

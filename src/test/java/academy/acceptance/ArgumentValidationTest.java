@@ -1,15 +1,14 @@
 package academy.acceptance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
+import academy.cli.LogAnalyzerCommand;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-import academy.cli.LogAnalyzerCommand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,10 +36,9 @@ public class ArgumentValidationTest {
     @DisplayName("На вход передан несуществующий локальный файл")
     void test1() {
         int exitCode = cmd.execute(
-            "-p", "/net/takogo/asdf.log",
-            "-f", "json",
-            "-o", "output.json"
-        );
+                "-p", "/net/takogo/asdf.log",
+                "-f", "json",
+                "-o", "output.json");
 
         assertEquals(2, exitCode, "exitCode отличается от ожидаемого (2)");
     }
@@ -49,10 +47,9 @@ public class ArgumentValidationTest {
     @DisplayName("На вход передан несуществующий удаленный файл")
     void test2() {
         int exitCode = cmd.execute(
-            "-p", "https://netunetu.lol",
-            "-f", "json",
-            "-o", "output.json"
-        );
+                "-p", "https://netunetu.lol",
+                "-f", "json",
+                "-o", "output.json");
 
         assertEquals(2, exitCode);
     }
@@ -65,10 +62,9 @@ public class ArgumentValidationTest {
         Files.createFile(invalidFile);
 
         int exitCode = cmd.execute(
-            "-p", invalidFile.toString(),
-            "-f", "json",
-            "-o", "output.json"
-        );
+                "-p", invalidFile.toString(),
+                "-f", "json",
+                "-o", "output.json");
 
         assertEquals(2, exitCode);
     }
@@ -81,13 +77,7 @@ public class ArgumentValidationTest {
         Path logFile = tempDir.resolve("access.log");
         Files.createFile(logFile);
 
-
-        int exitCode = cmd.execute(
-            "-p", logFile.toString(),
-            "-f", "json",
-            "-o", "output.json",
-            "--from", from
-        );
+        int exitCode = cmd.execute("-p", logFile.toString(), "-f", "json", "-o", "output.json", "--from", from);
         assertEquals(2, exitCode);
     }
 
@@ -99,13 +89,14 @@ public class ArgumentValidationTest {
         Files.createFile(logFile);
 
         int exitCode = cmd.execute(
-            "-p", logFile.toString(),
-            "-f", format,
-            "-o", output
-        );
+                "-p", logFile.toString(),
+                "-f", format,
+                "-o", output);
 
-        assertEquals(2, exitCode,
-            "Должна быть ошибка при несоответствии формата " + format + " и расширения файла " + output);
+        assertEquals(
+                2,
+                exitCode,
+                "Должна быть ошибка при несоответствии формата " + format + " и расширения файла " + output);
     }
 
     @Test
@@ -117,10 +108,9 @@ public class ArgumentValidationTest {
         Files.createFile(outputFile);
 
         int exitCode = cmd.execute(
-            "-p", logFile.toString(),
-            "-f", "json",
-            "-o", outputFile.toString()
-        );
+                "-p", logFile.toString(),
+                "-f", "json",
+                "-o", outputFile.toString());
     }
 
     @ParameterizedTest
@@ -158,12 +148,7 @@ public class ArgumentValidationTest {
         Path outputFile = tempDir.resolve("output.json");
 
         int exitCode = cmd.execute(
-            "-p", logFile.toString(),
-            "-f", "json",
-            "-o", outputFile.toString(),
-            unsupportedArgument, "чото"
-        );
-
+                "-p", logFile.toString(), "-f", "json", "-o", outputFile.toString(), unsupportedArgument, "чото");
 
         assertEquals(2, exitCode);
     }
@@ -177,12 +162,11 @@ public class ArgumentValidationTest {
         Path outputFile = tempDir.resolve("output.json");
 
         int exitCode = cmd.execute(
-            "-p", logFile.toString(),
-            "-f", "json",
-            "-o", outputFile.toString(),
-            "--from", "2025-01-02",
-            "--to", "2025-01-01"
-        );
+                "-p", logFile.toString(),
+                "-f", "json",
+                "-o", outputFile.toString(),
+                "--from", "2025-01-02",
+                "--to", "2025-01-01");
 
         assertEquals(2, exitCode);
     }

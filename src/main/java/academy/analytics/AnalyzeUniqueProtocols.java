@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * Собирает статистику по уникальным протоколам в логах. <br>
  * Подсчитывает, какие HTTP протоколы используются в запросах.
  */
-public class AnalyzeUniqueProtocols implements AnalyzerModule{
+public class AnalyzeUniqueProtocols implements AnalyzerModule {
     private final Set<String> protocols = new HashSet<>();
 
     @Override
@@ -25,8 +25,6 @@ public class AnalyzeUniqueProtocols implements AnalyzerModule{
     }
 
     private LinkedHashSet<String> sortedProtocols(Set<String> protocols) {
-        return protocols.stream()
-            .sorted()
-            .collect(Collectors.toCollection(LinkedHashSet::new));
+        return protocols.stream().sorted().collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }

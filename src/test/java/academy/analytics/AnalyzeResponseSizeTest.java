@@ -1,11 +1,12 @@
 package academy.analytics;
 
+import static academy.analytics.TestConstants.EXAMPLES_LOG;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import academy.model.AnalysisContext;
 import academy.model.ResponseSize;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import static academy.analytics.TestConstants.EXAMPLES_LOG;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AnalyzeResponseSizeTest {
     private AnalyzerModule analyzer = new AnalyzeResponseSize();
@@ -14,17 +15,18 @@ public class AnalyzeResponseSizeTest {
     @Test
     @DisplayName("Проверка работы accept + записывание данных в context")
     void responseSizeTest() {
-        context.setTotalRequestsCount(EXAMPLES_LOG.size()); // перед ResponseSizeStats должен вызываться ResponseStats, который устанавливает количество запросов в контекс
+        context.setTotalRequestsCount(
+                EXAMPLES_LOG.size()); // перед ResponseSizeStats должен вызываться ResponseStats, который устанавливает
+        // количество
+        // запросов в контекс
 
         EXAMPLES_LOG.forEach(analyzer::accept);
         analyzer.applyToContext(context);
 
         ResponseSize responseSizeInContext = context.getResponseSizeInBytes();
-        assertEquals(554.0, responseSizeInContext.averageValue(),
-            "Значение averageValue не соответствует действительности");
-        assertEquals(1234.0, responseSizeInContext.maxValue(),
-            "Значение maxValue не соответствует действительности");
-        assertEquals(1192.0, responseSizeInContext.p95Value(),
-            "Значение p95Value не соответствует действительности");
+        assertEquals(
+                554.0, responseSizeInContext.averageValue(), "Значение averageValue не соответствует действительности");
+        assertEquals(1234.0, responseSizeInContext.maxValue(), "Значение maxValue не соответствует действительности");
+        assertEquals(1192.0, responseSizeInContext.p95Value(), "Значение p95Value не соответствует действительности");
     }
 }

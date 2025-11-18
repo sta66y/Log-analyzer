@@ -29,9 +29,9 @@ public class AnalyzeTopMostFrequentResources implements AnalyzerModule {
         List<Resource> resources = new ArrayList<>(10);
         frequencyResources.forEach((key, value) -> resources.add(new Resource(key, value)));
         return resources.stream()
-            .sorted(Comparator.comparingInt(Resource::totalRequestsCount).reversed())
-            .limit(10)
-            .collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(Resource::totalRequestsCount).reversed())
+                .limit(10)
+                .collect(Collectors.toList());
     }
 
     private void addToCounter(ParsedLog log) {
